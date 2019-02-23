@@ -5,35 +5,44 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Max', age: 28 },
-      { name: 'Manu', age: 29 },
-      { name: 'Stephanie', age: 26 },
+      { id: 1, name: 'Max', age: 28 },
+      { id: 2, name: 'Manu', age: 29 },
+      { id: 3, name: 'Stephanie', age: 26 },
     ],
-    otherState: 'some other value',
+    // otherState: 'some other value',
+    showPersons: false,
   };
 
-  switchNameHandler = (newName) => {
-    // DON'T DO THIS: this.state.persons[0] = 'Maximilian';
-    this.setState({
-      persons: [
-        { name: newName, age: 28 },
-        { name: 'Manu', age: 29 },
-        { name: 'Stephanie', age: 27 },
-      ],
-    });
+  nameChangedHandler = (event, id) => {
+    const { persons } = this.state;
+    const personIndex = persons.findIndex(p => p.id === id);
+    const newPerson = {
+      ...persons[personIndex],
+      name: event.target.value,
+    };
+    const newPersons = [...persons];
+    newPersons[personIndex] = newPerson;
+
+    this.setState({ persons: newPersons });
   };
 
-  nameChangedHandler = (event) => {
-    this.setState({
-      persons: [
-        { name: 'Max', age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: 'Stephanie', age: 26 },
-      ],
-    });
+  deletePersonHandler = (personIndex) => {
+    const { persons } = this.state;
+    const newPersons = [...persons];
+    newPersons.splice(personIndex, 1);
+    this.setState({ persons: newPersons });
+  };
+
+
+  togglePersonsHandler = () => {
+    const { showPersons } = this.state;
+    const newShowPersons = !showPersons;
+    this.setState({ showPersons: newShowPersons });
   };
 
   render() {
+    const { showPersons, persons } = this.state;
+
     // inline styles in javascript, style is scoped to component
     const style = {
       backgroundColor: 'white',
@@ -43,36 +52,45 @@ class App extends Component {
       cursor: 'pointer',
     };
 
+    const newPersons = showPersons
+      ? (
+        <div>
+          {persons.map((person, i) => (
+            <Person
+              key={person.id}
+              name={person.name}
+              age={person.age}
+              click={() => this.deletePersonHandler(i)}
+              changed={event => this.nameChangedHandler(event, person.id)}
+            />
+          ))}
+        </div>
+      )
+      : null;
+
     return (
       <div className="App">
-        <h1>Hi, I'm a React App</h1>
+        <h1>{'Hi, I\'m a React App'}</h1>
         <p>This is really working!</p>
 
-        {/* Note: in JSX the click handler is onClick with a capital C!*/}
+        {/* Note: in JSX the click handler is onClick with a capital C! */}
         <button
+          type="button"
           style={style}
-          onClick={() => this.switchNameHandler('Maximilian')}>Switch Name</button>
-
-        <Person
-          name={this.state.persons[0].name}
-          age={this.state.persons[0].age}
-        />
-        <Person
-          name={this.state.persons[1].name}
-          age={this.state.persons[1].age}
-          click={this.switchNameHandler.bind(this, 'Max!')}
-          changed={this.nameChangedHandler}>
-          My Hobbies: Racing
-        </Person>
-        <Person
-          name={this.state.persons[2].name}
-          age={this.state.persons[2].age}
-        />
+          onClick={this.togglePersonsHandler}
+        >
+          Toggle Persons
+        </button>
+        {newPersons}
       </div>
     );
 
     // Compiles to the following code:
-    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null,'Hi, I\'m a React App'));
+    // return React.createElement(
+    //   'div',
+    //   {className: 'App'},
+    //   React.createElement('h1', null,'Hi, I\'m a React App')
+    // );
   }
 }
 

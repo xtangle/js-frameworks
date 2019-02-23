@@ -1,14 +1,49 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import './Person.css'; // webpack can handle importing of stylesheets, style is scoped globally
 
-const person = (props) => {
+const Person = (props) => {
+  const {
+    click, changed, name, age, children,
+  } = props;
+
+  const btnStyle = {
+    backgroundColor: 'white',
+    font: 'inherit',
+    border: '1px solid purple',
+    cursor: 'pointer',
+  };
+
   return (
     <div className="Person">
-      <p onClick={props.click}>I'm a Person and I am {props.name} {props.age} old!</p>
-      <p>{props.children}</p>
-      <input type="text" onChange={props.changed} value={props.name}/>
+      <button
+        type="button"
+        style={btnStyle}
+        onClick={click}
+      >
+        Remove me
+      </button>
+      <p>{`I'm a Person and I am ${name} ${age} old!`}</p>
+      <p>{children}</p>
+      <input
+        type="text"
+        onChange={changed}
+        value={name}
+      />
     </div>
   );
 };
 
-export default person;
+Person.propTypes = {
+  click: PropTypes.func.isRequired,
+  changed: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  age: PropTypes.number.isRequired,
+  children: PropTypes.node,
+};
+
+Person.defaultProps = {
+  children: '',
+};
+
+export default Person;
