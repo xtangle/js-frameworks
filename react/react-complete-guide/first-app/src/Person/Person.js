@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import Radium from 'radium';
 import React from 'react';
 import './Person.css'; // webpack can handle importing of stylesheets, style is scoped globally
 
@@ -14,8 +15,17 @@ const Person = (props) => {
     cursor: 'pointer',
   };
 
+  const personStyle = {
+    '@media (max-width: 300px)': {
+      width: '180px',
+    },
+    '@media (min-width: 500px)': {
+      width: '450px',
+    },
+  };
+
   return (
-    <div className="Person">
+    <div className="Person" style={personStyle}>
       <button
         type="button"
         style={btnStyle}
@@ -46,4 +56,4 @@ Person.defaultProps = {
   children: '',
 };
 
-export default Person;
+export default Radium(Person);

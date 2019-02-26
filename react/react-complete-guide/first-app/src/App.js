@@ -1,3 +1,4 @@
+import Radium, { StyleRoot } from 'radium';
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
@@ -45,15 +46,21 @@ class App extends Component {
 
     // inline styles in javascript, style is scoped to component
     const style = {
-      backgroundColor: 'white',
+      backgroundColor: 'green',
+      color: 'white',
       font: 'inherit',
       border: '1px solid blue',
       padding: '8px',
       cursor: 'pointer',
+      ':hover': {
+        backgroundColor: 'lightgreen',
+        color: 'black',
+      },
     };
 
-    const newPersons = showPersons
-      ? (
+    let newPersons = [];
+    if (showPersons) {
+      newPersons = (
         <div>
           {persons.map((person, i) => (
             <Person
@@ -65,24 +72,39 @@ class App extends Component {
             />
           ))}
         </div>
-      )
-      : null;
+      );
+      style.backgroundColor = 'red';
+      style[':hover'] = {
+        backgroundColor: 'salmon',
+        color: 'black',
+      };
+    }
+
+    const paragraphClasses = [];
+    if (persons.length <= 2) {
+      paragraphClasses.push('red');
+    }
+    if (persons.length <= 1) {
+      paragraphClasses.push('bold');
+    }
 
     return (
-      <div className="App">
-        <h1>{'Hi, I\'m a React App'}</h1>
-        <p>This is really working!</p>
+      <StyleRoot>
+        <div className="App">
+          <h1>{'Hi, I\'m a React App'}</h1>
+          <p className={paragraphClasses.join(' ')}>This is really working!</p>
 
-        {/* Note: in JSX the click handler is onClick with a capital C! */}
-        <button
-          type="button"
-          style={style}
-          onClick={this.togglePersonsHandler}
-        >
-          Toggle Persons
-        </button>
-        {newPersons}
-      </div>
+          {/* Note: in JSX the click handler is onClick with a capital C! */}
+          <button
+            type="button"
+            style={style}
+            onClick={this.togglePersonsHandler}
+          >
+            Toggle Persons
+          </button>
+          {newPersons}
+        </div>
+      </StyleRoot>
     );
 
     // Compiles to the following code:
@@ -94,4 +116,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Radium(App);
