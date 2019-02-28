@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import styles from './App.css';
 import Person from './Person/Person';
 
 class App extends Component {
@@ -44,7 +44,7 @@ class App extends Component {
     const { showPersons, persons } = this.state;
 
     // inline styles in javascript, style is scoped to component
-    const style = {
+    const buttonStyle = {
       backgroundColor: 'green',
       color: 'white',
       font: 'inherit',
@@ -68,26 +68,26 @@ class App extends Component {
           ))}
         </div>
       );
-      style.backgroundColor = 'red';
+      buttonStyle.backgroundColor = 'red';
     }
 
     const paragraphClasses = [];
     if (persons.length <= 2) {
-      paragraphClasses.push('red');
+      paragraphClasses.push(styles.red);
     }
     if (persons.length <= 1) {
-      paragraphClasses.push('bold');
+      paragraphClasses.push(styles.bold);
     }
 
     return (
-      <div className="App">
+      <div className={styles.App}>
         <h1>{'Hi, I\'m a React App'}</h1>
         <p className={paragraphClasses.join(' ')}>This is really working!</p>
 
         {/* Note: in JSX the click handler is onClick with a capital C! */}
         <button
           type="button"
-          style={style}
+          style={buttonStyle}
           onClick={this.togglePersonsHandler}
         >
           Toggle Persons

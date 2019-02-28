@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import './Person.css'; // webpack can handle importing of stylesheets, style is scoped globally
+import styles from './Person.css';
 
 const Person = (props) => {
   const {
@@ -15,7 +15,7 @@ const Person = (props) => {
   };
 
   return (
-    <div className="Person">
+    <div className={styles.Person}>
       <button
         type="button"
         style={btnStyle}
