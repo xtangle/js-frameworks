@@ -1,4 +1,3 @@
-import Radium, { StyleRoot } from 'radium';
 import React, { Component } from 'react';
 import './App.css';
 import Person from './Person/Person';
@@ -52,10 +51,6 @@ class App extends Component {
       border: '1px solid blue',
       padding: '8px',
       cursor: 'pointer',
-      ':hover': {
-        backgroundColor: 'lightgreen',
-        color: 'black',
-      },
     };
 
     let newPersons = [];
@@ -74,10 +69,6 @@ class App extends Component {
         </div>
       );
       style.backgroundColor = 'red';
-      style[':hover'] = {
-        backgroundColor: 'salmon',
-        color: 'black',
-      };
     }
 
     const paragraphClasses = [];
@@ -89,22 +80,20 @@ class App extends Component {
     }
 
     return (
-      <StyleRoot>
-        <div className="App">
-          <h1>{'Hi, I\'m a React App'}</h1>
-          <p className={paragraphClasses.join(' ')}>This is really working!</p>
+      <div className="App">
+        <h1>{'Hi, I\'m a React App'}</h1>
+        <p className={paragraphClasses.join(' ')}>This is really working!</p>
 
-          {/* Note: in JSX the click handler is onClick with a capital C! */}
-          <button
-            type="button"
-            style={style}
-            onClick={this.togglePersonsHandler}
-          >
-            Toggle Persons
-          </button>
-          {newPersons}
-        </div>
-      </StyleRoot>
+        {/* Note: in JSX the click handler is onClick with a capital C! */}
+        <button
+          type="button"
+          style={style}
+          onClick={this.togglePersonsHandler}
+        >
+          Toggle Persons
+        </button>
+        {newPersons}
+      </div>
     );
 
     // Compiles to the following code:
@@ -116,4 +105,4 @@ class App extends Component {
   }
 }
 
-export default Radium(App);
+export default App;
