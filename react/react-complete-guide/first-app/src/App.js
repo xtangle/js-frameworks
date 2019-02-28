@@ -43,16 +43,7 @@ class App extends Component {
   render() {
     const { showPersons, persons } = this.state;
 
-    // inline styles in javascript, style is scoped to component
-    const buttonStyle = {
-      backgroundColor: 'green',
-      color: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer',
-    };
-
+    const btnClasses = [styles.Button];
     let newPersons = [];
     if (showPersons) {
       newPersons = (
@@ -68,7 +59,7 @@ class App extends Component {
           ))}
         </div>
       );
-      buttonStyle.backgroundColor = 'red';
+      btnClasses.push(styles.RedBtn);
     }
 
     const paragraphClasses = [];
@@ -86,8 +77,8 @@ class App extends Component {
 
         {/* Note: in JSX the click handler is onClick with a capital C! */}
         <button
+          className={btnClasses.join(' ')}
           type="button"
-          style={buttonStyle}
           onClick={this.togglePersonsHandler}
         >
           Toggle Persons
