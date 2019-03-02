@@ -3,7 +3,9 @@ import React from 'react';
 import styles from './Cockpit.css';
 
 const Cockpit = (props) => {
-  const { persons, showPersons, onButtonClick } = props;
+  const {
+    title, persons, showPersons, onButtonClick,
+  } = props;
 
   const paragraphClasses = [];
   if (persons.length <= 2) {
@@ -20,7 +22,7 @@ const Cockpit = (props) => {
 
   return (
     <div className={styles.Cockpit}>
-      <h1>{'Hi, I\'m a React App'}</h1>
+      <h1>{title}</h1>
       <p className={paragraphClasses.join(' ')}>This is really working!</p>
 
       {/* Note: in JSX the click handler is onClick with a capital C! */}
@@ -36,6 +38,7 @@ const Cockpit = (props) => {
 };
 
 Cockpit.propTypes = {
+  title: PropTypes.string.isRequired,
   persons: PropTypes.arrayOf(PropTypes.any).isRequired,
   showPersons: PropTypes.bool.isRequired,
   onButtonClick: PropTypes.func,

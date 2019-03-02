@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Persons from '../components/Persons/Persons';
@@ -40,6 +41,7 @@ class App extends Component {
 
   render() {
     const { showPersons, persons } = this.state;
+    const { appTitle } = this.props;
 
     const personsSection = showPersons
       ? (
@@ -54,6 +56,7 @@ class App extends Component {
     return (
       <div className={styles.App}>
         <Cockpit
+          title={appTitle}
           persons={persons}
           showPersons={showPersons}
           onButtonClick={this.togglePersonsHandler}
@@ -70,5 +73,9 @@ class App extends Component {
     // );
   }
 }
+
+App.propTypes = {
+  appTitle: PropTypes.string.isRequired,
+};
 
 export default App;
