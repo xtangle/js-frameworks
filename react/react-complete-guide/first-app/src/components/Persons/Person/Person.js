@@ -4,7 +4,7 @@ import styles from './Person.css';
 
 const Person = (props) => {
   const {
-    click, changed, name, age, children,
+    onClick, onChange, name, age, children,
   } = props;
 
   const btnStyle = {
@@ -19,7 +19,7 @@ const Person = (props) => {
       <button
         type="button"
         style={btnStyle}
-        onClick={click}
+        onClick={onClick}
       >
         Remove me
       </button>
@@ -27,7 +27,7 @@ const Person = (props) => {
       <p>{children}</p>
       <input
         type="text"
-        onChange={changed}
+        onChange={onChange}
         value={name}
       />
     </div>
@@ -35,14 +35,16 @@ const Person = (props) => {
 };
 
 Person.propTypes = {
-  click: PropTypes.func.isRequired,
-  changed: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
+  onChange: PropTypes.func,
   name: PropTypes.string.isRequired,
   age: PropTypes.number.isRequired,
   children: PropTypes.node,
 };
 
 Person.defaultProps = {
+  onClick: () => null,
+  onChange: () => null,
   children: null,
 };
 
