@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 import Person from './Person/Person';
 
-class Persons extends Component {
+class Persons extends PureComponent {
   // static getDerivedStateFromProps(props, state) {
   //   console.log('[Persons.js] getDerivedStateFromProps');
   //   return state;
   // }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-    console.log('[Persons.js] shouldComponentUpdate', nextProps, nextState, nextContext);
-    const { persons } = this.props;
-    return (nextProps.persons !== persons);
-  }
+  // shouldComponentUpdate(nextProps, nextState, nextContext) {
+  //   console.log('[Persons.js] shouldComponentUpdate', nextProps, nextState, nextContext);
+  //   const { persons } = this.props;
+  //   return (nextProps.persons !== persons);
+  // }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log('[Persons.js] componentDidUpdate', prevProps, prevState, snapshot);

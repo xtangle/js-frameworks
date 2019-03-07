@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import styles from './Person.css';
 
 class Person extends Component {
@@ -21,22 +22,24 @@ class Person extends Component {
     };
 
     return (
-      <div className={styles.Person}>
-        <button
-          type="button"
-          style={btnStyle}
-          onClick={onClick}
-        >
-          Remove me
-        </button>
-        <p>{`I'm a Person and I am ${name} ${age} old!`}</p>
-        <p>{children}</p>
-        <input
-          type="text"
-          onChange={onChange}
-          value={name}
-        />
-      </div>
+      <Aux>
+        <div className={styles.Person}>
+          <button
+            type="button"
+            style={btnStyle}
+            onClick={onClick}
+          >
+            Remove me
+          </button>
+          <p>{`I'm a Person and I am ${name} ${age} old!`}</p>
+          <p>{children}</p>
+          <input
+            type="text"
+            onChange={onChange}
+            value={name}
+          />
+        </div>
+      </Aux>
     );
   }
 }
