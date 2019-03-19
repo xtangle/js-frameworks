@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Aux from '../../../hoc/Auxiliary/Auxiliary';
+import withClass from '../../../hoc/WithClass/WithClass';
 import styles from './Person.css';
 
 class Person extends Component {
@@ -22,24 +22,22 @@ class Person extends Component {
     };
 
     return (
-      <Aux>
-        <div className={styles.Person}>
-          <button
-            type="button"
-            style={btnStyle}
-            onClick={onClick}
-          >
-            Remove me
-          </button>
-          <p>{`I'm a Person and I am ${name} ${age} old!`}</p>
-          <p>{children}</p>
-          <input
-            type="text"
-            onChange={onChange}
-            value={name}
-          />
-        </div>
-      </Aux>
+      <>
+        <button
+          type="button"
+          style={btnStyle}
+          onClick={onClick}
+        >
+          Remove me
+        </button>
+        <p>{`I'm a Person and I am ${name} ${age} old!`}</p>
+        <p>{children}</p>
+        <input
+          type="text"
+          onChange={onChange}
+          value={name}
+        />
+      </>
     );
   }
 }
@@ -58,4 +56,4 @@ Person.defaultProps = {
   children: null,
 };
 
-export default Person;
+export default withClass(Person, styles.Person);

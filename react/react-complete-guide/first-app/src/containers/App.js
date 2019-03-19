@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Persons from '../components/Persons/Persons';
 import styles from './App.css';
+import Aux from '../hoc/Auxiliary/Auxiliary';
+import withClass from '../hoc/WithClass/WithClass';
 
 class App extends Component {
   state = {
@@ -13,6 +15,7 @@ class App extends Component {
     ],
     showPersons: false,
     showCockpit: true,
+    changeCounter: 0,
   };
 
   constructor(props) {
@@ -43,34 +46,42 @@ class App extends Component {
   }
 
   nameChangeHandler = (event, id) => {
-    const { persons } = this.state;
-    const personIndex = persons.findIndex(p => p.id === id);
-    const newPerson = {
-      ...persons[personIndex],
-      name: event.target.value,
-    };
-    const newPersons = [...persons];
-    newPersons[personIndex] = newPerson;
-
-    this.setState({ persons: newPersons });
+    const newPersonName = event.target.value;
+    this.setState((prevState) => {
+      const { persons, changeCounter } = prevState;
+      const personIndex = persons.findIndex(p => p.id === id);
+      const newPerson = {
+        ...persons[personIndex],
+        name: newPersonName,
+      };
+      const newPersons = [...persons];
+      newPersons[personIndex] = newPerson;
+      return { persons: newPersons, changeCounter: changeCounter + 1 };
+    });
   };
 
   deletePersonHandler = (event, id) => {
-    const { persons } = this.state;
-    const newPersons = persons.filter(p => p.id !== id);
-    this.setState({ persons: newPersons });
+    this.setState((prevState) => {
+      const { persons } = prevState;
+      const newPersons = persons.filter(p => p.id !== id);
+      return { persons: newPersons };
+    });
   };
 
   togglePersonsHandler = () => {
-    const { showPersons } = this.state;
-    const newShowPersons = !showPersons;
-    this.setState({ showPersons: newShowPersons });
+    this.setState((prevState) => {
+      const { showPersons } = prevState;
+      const newShowPersons = !showPersons;
+      return { showPersons: newShowPersons };
+    });
   };
 
   render() {
     console.log('[App.js] render');
 
-    const { showPersons, persons, showCockpit } = this.state;
+    const {
+      showPersons, persons, showCockpit, changeCounter,
+    } = this.state;
     const { appTitle } = this.props;
 
     const cockpitSection = showCockpit
@@ -95,7 +106,7 @@ class App extends Component {
       : null;
 
     return (
-      <div className={styles.App}>
+      <Aux>
         <button
           type="button"
           onClick={() => {
@@ -104,9 +115,10 @@ class App extends Component {
         >
           Toggle Cockpit
         </button>
+        <p>{`Times names changed: ${changeCounter}`}</p>
         {cockpitSection}
         {personsSection}
-      </div>
+      </Aux>
     );
 
     // Compiles to the following code:
@@ -122,4 +134,4 @@ App.propTypes = {
   appTitle: PropTypes.string.isRequired,
 };
 
-export default App;
+export default withClass(App, styles.App);
