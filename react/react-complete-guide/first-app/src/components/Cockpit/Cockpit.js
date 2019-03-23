@@ -1,12 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import styles from './Cockpit.css';
 
 const Cockpit = (props) => {
-  const {
-    title, personsLength, showPersons, onTogglePersons,
-  } = props;
+  const { title, personsLength, showPersons, onTogglePersons } = props;
+  const authContext = useContext(AuthContext);
 
   const toggleBtnRef = useRef(null);
 
@@ -19,18 +18,19 @@ const Cockpit = (props) => {
     const timer = setTimeout(() => {
       console.log('[Cockpit.js] Saved data to cloud!');
     }, 1000);
+    console.log(`[Cockpit.js] authenticated: ${authContext.authenticated}`);
     return () => {
       clearTimeout(timer);
-      console.log('[Cockpit.js] cleanup work in useEffect');
+      console.log('[Cockpit.js] cleanup work in 1st useEffect');
     };
   }, []);
 
-  useEffect(() => {
-    console.log('[Cockpit.js] 2nd useEffect');
-    return () => {
-      console.log('[Cockpit.js] cleanup work in 2nd useEffect');
-    };
-  });
+  // useEffect(() => {
+  //   console.log('[Cockpit.js] 2nd useEffect');
+  //   return () => {
+  //     console.log('[Cockpit.js] cleanup work in 2nd useEffect');
+  //   };
+  // });
 
   const paragraphClasses = [];
   if (personsLength <= 2) {
@@ -59,18 +59,12 @@ const Cockpit = (props) => {
       >
         Toggle Persons
       </button>
-      <AuthContext.Consumer>
-        {
-          (context) => (
-            <button
-              type="button"
-              onClick={context.loginHandler}
-            >
-              Log in
-            </button>
-          )
-        }
-      </AuthContext.Consumer>
+      <button
+        type="button"
+        onClick={authContext.loginHandler}
+      >
+        Log in
+      </button>
     </div>
   );
 };

@@ -5,13 +5,18 @@ import withClass from '../../../hoc/WithClass/WithClass';
 import styles from './Person.css';
 
 class Person extends Component {
+  static contextType = AuthContext;
+
   constructor(props) {
     super(props);
     this.inputElementRef = React.createRef();
   }
 
   componentDidMount() {
+    const { authenticated } = this.context;
+    // this.inputElement.focus();
     this.inputElementRef.current.focus();
+    console.log(`[Person.js] componentDidMount, authenticated: ${authenticated}`);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -21,6 +26,7 @@ class Person extends Component {
   render() {
     console.log('[Person.js] rendering...');
     const { onClick, onChange, name, age, children } = this.props;
+    const { authenticated } = this.context;
 
     const btnStyle = {
       backgroundColor: 'white',
@@ -31,15 +37,9 @@ class Person extends Component {
       margin: '16px auto',
     };
 
-    const authSection = (
-      <AuthContext.Consumer>
-        {
-          (context) => (context.authenticated
-            ? (<p>Authenticated!</p>)
-            : (<p>Please log in</p>))
-        }
-      </AuthContext.Consumer>
-    );
+    const authSection = authenticated
+      ? <p>Authenticated!</p>
+      : <p>Please log in</p>;
 
     return (
       <>
