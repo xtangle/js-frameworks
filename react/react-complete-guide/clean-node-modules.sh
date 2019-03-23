@@ -7,4 +7,4 @@ delete_node_modules() {
   done
 }
 
-delete_node_modules "assignments" "examples"
+delete_node_modules "assignments" "examples" "legacy" "my-examples"
