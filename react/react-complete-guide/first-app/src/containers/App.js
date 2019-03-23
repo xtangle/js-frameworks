@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Cockpit from '../components/Cockpit/Cockpit';
 import Persons from '../components/Persons/Persons';
-import styles from './App.css';
+import AuthContext from '../context/AuthContext';
 import Aux from '../hoc/Auxiliary/Auxiliary';
 import withClass from '../hoc/WithClass/WithClass';
+import styles from './App.css';
 
 class App extends Component {
   state = {
@@ -16,6 +17,7 @@ class App extends Component {
     showPersons: false,
     showCockpit: true,
     changeCounter: 0,
+    authenticated: false,
   };
 
   constructor(props) {
@@ -76,12 +78,14 @@ class App extends Component {
     });
   };
 
+  loginHandler = () => {
+    this.setState({ authenticated: true });
+  };
+
   render() {
     console.log('[App.js] render');
 
-    const {
-      showPersons, persons, showCockpit, changeCounter,
-    } = this.state;
+    const { showPersons, persons, showCockpit, changeCounter, authenticated } = this.state;
     const { appTitle } = this.props;
 
     const cockpitSection = showCockpit
@@ -90,7 +94,7 @@ class App extends Component {
           title={appTitle}
           personsLength={persons.length}
           showPersons={showPersons}
-          onButtonClick={this.togglePersonsHandler}
+          onTogglePersons={this.togglePersonsHandler}
         />
       )
       : null;
@@ -116,8 +120,10 @@ class App extends Component {
           Toggle Cockpit
         </button>
         <p>{`Times names changed: ${changeCounter}`}</p>
-        {cockpitSection}
-        {personsSection}
+        <AuthContext.Provider value={{ authenticated, loginHandler: this.loginHandler }}>
+          {cockpitSection}
+          {personsSection}
+        </AuthContext.Provider>
       </Aux>
     );
 

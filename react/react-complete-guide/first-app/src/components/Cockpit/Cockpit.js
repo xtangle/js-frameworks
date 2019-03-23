@@ -1,17 +1,23 @@
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
+import AuthContext from '../../context/AuthContext';
 import styles from './Cockpit.css';
 
 const Cockpit = (props) => {
   const {
-    title, personsLength, showPersons, onButtonClick,
+    title, personsLength, showPersons, onTogglePersons,
   } = props;
 
+  const toggleBtnRef = useRef(null);
+
+  // only renders (because inputs = []) when component is rendered the first time,
+  // and cleans up when the component is unmounted
   useEffect(() => {
     console.log('[Cockpit.js] useEffect');
+    toggleBtnRef.current.click();
     // Http request
     const timer = setTimeout(() => {
-      alert('Saved data to cloud!');
+      console.log('[Cockpit.js] Saved data to cloud!');
     }, 1000);
     return () => {
       clearTimeout(timer);
@@ -46,12 +52,25 @@ const Cockpit = (props) => {
 
       {/* Note: in JSX the click handler is onClick with a capital C! */}
       <button
+        ref={toggleBtnRef}
         className={btnClasses.join(' ')}
         type="button"
-        onClick={onButtonClick}
+        onClick={onTogglePersons}
       >
         Toggle Persons
       </button>
+      <AuthContext.Consumer>
+        {
+          (context) => (
+            <button
+              type="button"
+              onClick={context.loginHandler}
+            >
+              Log in
+            </button>
+          )
+        }
+      </AuthContext.Consumer>
     </div>
   );
 };
@@ -60,11 +79,11 @@ Cockpit.propTypes = {
   title: PropTypes.string.isRequired,
   personsLength: PropTypes.number.isRequired,
   showPersons: PropTypes.bool.isRequired,
-  onButtonClick: PropTypes.func,
+  onTogglePersons: PropTypes.func,
 };
 
 Cockpit.defaultProps = {
-  onButtonClick: () => null,
+  onTogglePersons: () => null,
 };
 
 export default React.memo(Cockpit);
