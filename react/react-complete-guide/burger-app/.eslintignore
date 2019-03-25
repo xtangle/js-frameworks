@@ -1,0 +1,4 @@
+build/*
+scripts/*
+config/*
+src/serviceWorker.js
