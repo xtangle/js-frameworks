@@ -20,6 +20,7 @@ module.exports = {
   ],
   rules: {
     'react/jsx-filename-extension': 'off',
+    'react/no-array-index-key': 'warn',
     'react/prefer-stateless-function': 'warn',
     'arrow-parens': 'off',
     'object-curly-newline': ['error', { consistent: true }],
