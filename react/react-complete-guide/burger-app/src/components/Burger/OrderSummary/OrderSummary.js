@@ -4,7 +4,7 @@ import Aux from '../../../hoc/Auxiliary';
 import Button from '../../UI/Button/Button';
 
 const OrderSummary = (props) => {
-  const { ingredients, onPurchaseCancel, onPurchaseContinue } = props;
+  const { ingredients, price, onPurchaseCancel, onPurchaseContinue } = props;
 
   const ingredientSummary = Object.entries(ingredients)
     .map(([ingredient, num]) => (
@@ -21,18 +21,19 @@ const OrderSummary = (props) => {
       <ul>
         {ingredientSummary}
       </ul>
+      <p><strong>{`Total Price: ${price.toFixed(2)}`}</strong></p>
       <p>Continue to Checkout?</p>
-      <Button
-        type="Success"
-        onClick={onPurchaseContinue}
-      >
-        CONTINUE
-      </Button>
       <Button
         type="Danger"
         onClick={onPurchaseCancel}
       >
         CANCEL
+      </Button>
+      <Button
+        type="Success"
+        onClick={onPurchaseContinue}
+      >
+        CONTINUE
       </Button>
     </Aux>
   );
@@ -40,6 +41,7 @@ const OrderSummary = (props) => {
 
 OrderSummary.propTypes = {
   ingredients: PropTypes.objectOf(PropTypes.number).isRequired,
+  price: PropTypes.number.isRequired,
   onPurchaseCancel: PropTypes.func,
   onPurchaseContinue: PropTypes.func,
 };
