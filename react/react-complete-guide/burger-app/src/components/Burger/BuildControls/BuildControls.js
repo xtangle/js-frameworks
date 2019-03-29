@@ -4,14 +4,28 @@ import BuildControl from './BuildControl/BuildControl';
 import classes from './BuildControls.css';
 
 const CONTROLS = [
-  { label: 'Salad', type: 'salad' },
-  { label: 'Bacon', type: 'bacon' },
-  { label: 'Cheese', type: 'cheese' },
-  { label: 'Meat', type: 'meat' },
+  {
+    label: 'Salad',
+    type: 'salad',
+  },
+  {
+    label: 'Bacon',
+    type: 'bacon',
+  },
+  {
+    label: 'Cheese',
+    type: 'cheese',
+  },
+  {
+    label: 'Meat',
+    type: 'meat',
+  },
 ];
 
 const BuildControls = (props) => {
-  const { price, purchaseable, onIngredientAdded, onIngredientRemoved, disabledInfo } = props;
+  const {
+    price, purchaseable, onIngredientAdded, onIngredientRemoved, onOrdered, disabledInfo,
+  } = props;
 
   const priceSection = (
     <p>
@@ -35,6 +49,7 @@ const BuildControls = (props) => {
       className={classes.OrderButton}
       type="button"
       disabled={!purchaseable}
+      onClick={onOrdered}
     >
       ORDER NOW
     </button>
@@ -54,12 +69,14 @@ BuildControls.propTypes = {
   purchaseable: PropTypes.bool.isRequired,
   onIngredientAdded: PropTypes.func,
   onIngredientRemoved: PropTypes.func,
+  onOrdered: PropTypes.func,
   disabledInfo: PropTypes.objectOf(PropTypes.bool),
 };
 
 BuildControls.defaultProps = {
   onIngredientAdded: () => null,
   onIngredientRemoved: () => null,
+  onOrdered: () => null,
   disabledInfo: {},
 };
 
