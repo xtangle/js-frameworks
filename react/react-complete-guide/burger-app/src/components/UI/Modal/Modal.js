@@ -1,8 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Aux from '../../../hoc/Auxiliary';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Backdrop from '../Backdrop/Backdrop';
 import classes from './Modal.css';
+
+function shouldNotUpdate(prevProps, nextProps) {
+  return prevProps.show === nextProps.show;
+}
 
 const Modal = (props) => {
   const { children, show, onClose } = props;
@@ -38,4 +42,4 @@ Modal.defaultProps = {
   onClose: () => null,
 };
 
-export default Modal;
+export default React.memo(Modal, shouldNotUpdate);

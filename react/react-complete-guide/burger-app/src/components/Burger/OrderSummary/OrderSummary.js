@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import Aux from '../../../hoc/Auxiliary';
+import React, { useEffect } from 'react';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Button from '../../UI/Button/Button';
 
 const OrderSummary = (props) => {
   const { ingredients, price, onPurchaseCancel, onPurchaseContinue } = props;
+
+  useEffect(() => {
+    console.log('[OrderSummary] useEffect');
+  });
 
   const ingredientSummary = Object.entries(ingredients)
     .map(([ingredient, num]) => (
