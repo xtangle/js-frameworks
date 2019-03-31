@@ -1,30 +1,35 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import classes from './Toolbar.css';
 import Logo from '../../Logo/Logo';
+import NavigationItems from '../NavigationItems/NavigationItems';
+import DrawerToggle from '../SideDrawer/DrawerToggle/DrawerToggle';
+import classes from './Toolbar.css';
 
 const Toolbar = (props) => {
-  const { children } = props;
+  const { onDrawerToggleClick } = props;
 
   return (
     <header className={classes.Toolbar}>
-      <div>MENU</div>
-      <Logo />
-      <nav>
-        ...
-        {children}
+      <DrawerToggle
+        onClick={onDrawerToggleClick}
+      />
+      <div className={classes.Logo}>
+        <Logo />
+      </div>
+      <nav className={classes.DesktopOnly}>
+        <NavigationItems />
       </nav>
     </header>
   );
 };
 
 Toolbar.propTypes = {
-  children: PropTypes.node,
+  onDrawerToggleClick: PropTypes.func,
 };
 
 
 Toolbar.defaultProps = {
-  children: null,
+  onDrawerToggleClick: () => null,
 };
 
 export default Toolbar;

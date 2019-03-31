@@ -22,6 +22,7 @@ module.exports = {
     'react/jsx-filename-extension': 'off',
     'react/no-array-index-key': 'warn',
     'react/prefer-stateless-function': 'warn',
+    'arrow-body-style': 'warn',
     'arrow-parens': 'off',
     'object-curly-newline': ['error', { consistent: true }],
   },
