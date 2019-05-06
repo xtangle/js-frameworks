@@ -1,2 +1,2 @@
-# js-frameworks
-Course material and playground for various Javascript frameworks.
+# programming-courses
+Course material and playground for various programming courses.
