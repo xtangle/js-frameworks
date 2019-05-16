@@ -1,0 +1,17 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "compile:sass": "node-sass sass/main.scss css/style.css -w",
+    "serve": "live-server",
+    "start": "concurrently \"yarn serve\" \"yarn compile:sass\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "live-server": "^1.2.1",
+    "node-sass": "^4.12.0"
+  }
+}
