@@ -6,7 +6,7 @@
   "scripts": {
     "compile:sass": "node-sass sass/main.scss css/style.css -w --include-path sass",
     "serve": "live-server",
-    "start": "concurrently \"yarn serve\" \"yarn compile:sass\""
+    "start": "concurrently -k \"yarn:compile:*\" \"yarn:serve\""
   },
   "dependencies": {},
   "devDependencies": {
