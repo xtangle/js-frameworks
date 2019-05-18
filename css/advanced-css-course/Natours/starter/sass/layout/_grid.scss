@@ -1,6 +1,5 @@
 .row {
   max-width: $grid-width;
-  background-color: #eee;
   margin: 0 auto;
 
   &:not(:last-child) {
@@ -14,7 +13,6 @@
       .col-#{$j}-of-#{$i} {
         $col-width: calc((100% - (#{$i} - 1) * #{$gutter-horizontal}) / #{$i});
         width: calc(#{$j} * #{$col-width} + (#{$j} - 1) * #{$gutter-horizontal});
-        background-color: orangered;
         float: left;
 
         &:not(:last-child) {
