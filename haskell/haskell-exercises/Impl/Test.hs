@@ -40,7 +40,7 @@ counterexample' s p = return (counterexample s p)
 
 -- monadic tests
 
-stop_ p = stop p >> return ()
+stop_ p = void (stop p)
 
 withOverrideHandle :: Handle -> Handle -> IO a -> IO a
 withOverrideHandle new old op =
