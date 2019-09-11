@@ -153,11 +153,11 @@ myGcd a b
 -- 2. Within even and odd numbers the ordering is normal
 funnyCompare :: Int -> Int -> Ordering
 funnyCompare a b
-    | parityA == parityB = compare a b
-    | otherwise = compare parityA parityB
+    | isOddA == isOddB = compare a b
+    | otherwise = compare isOddA isOddB
   where
-    parityA = mod a 2
-    parityB = mod b 2
+    isOddA = odd a
+    isOddB = odd b
 
 -- Ex 15: Implement the function funnyMin that returns the minimum of
 -- its two arguments, according to the ordering implemented by
@@ -230,8 +230,7 @@ isPrime :: Integer -> Bool
 isPrime n
     | n < 0 = error "Must be a non-negative Integer"
     | n < 2 = False
-    | smallestDivisor n == n = True
-    | otherwise = False
+    | otherwise = smallestDivisor n == n
 
 -- Ex 19: implement a function nextPrime that returns the first prime
 -- number that comes after the given number. Use the function isPrime
