@@ -1,3 +1,5 @@
+import Data.Char
+
 bmiTell :: (RealFloat a) => a -> a -> String  
 bmiTell weight height  
     | bmi <= skinny = "You're underweight, you emo, you!"  
@@ -9,3 +11,12 @@ bmiTell weight height
 
 initials :: String -> String -> String  
 initials (f:_) (l:_) = [f] ++ ". " ++ [l] ++ "." 
+
+encode :: Int -> String -> String  
+encode shift msg = 
+    let ords = map ord msg  
+        shifted = map (+ shift) ords  
+    in  map chr shifted 
+
+decode :: Int -> String -> String  
+decode shift msg = encode (negate shift) msg
