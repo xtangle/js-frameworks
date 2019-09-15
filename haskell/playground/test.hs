@@ -1,5 +1,9 @@
 import Data.Char
 
+import qualified Geometry.Sphere as Sphere  
+import qualified Geometry.Cuboid as Cuboid  
+import qualified Geometry.Cube as Cube
+
 bmiTell :: (RealFloat a) => a -> a -> String  
 bmiTell weight height  
     | bmi <= skinny = "You're underweight, you emo, you!"  
