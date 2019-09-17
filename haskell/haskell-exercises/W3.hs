@@ -154,26 +154,29 @@ incB (TwoCounters a b) = TwoCounters a (b + 1)
 -- get (tick (tick (toggle (tick zero))))
 --   ==> -1
 data UpDown
-    = UpDownUndefined1
-    | UpDownUndefined2
+    = Up Int
+    | Down Int
 
 -- zero is an increasing counter with value 0
 zero :: UpDown
-zero = undefined
+zero = Up 0
 
 -- get returns the counter value
 get :: UpDown -> Int
-get ud = undefined
+get (Up x)   = x
+get (Down x) = x
 
 -- tick increases an increasing counter by one or decreases a
 -- decreasing counter by one
 tick :: UpDown -> UpDown
-tick ud = undefined
+tick (Up x)   = Up (x + 1)
+tick (Down x) = Down (x - 1)
 
 -- toggle changes an increasing counter into a decreasing counter and
 -- vice versa
 toggle :: UpDown -> UpDown
-toggle ud = undefined
+toggle (Up x)   = Down x
+toggle (Down x) = Up x
 
 -- !!!!!
 -- The next exercises use the binary tree type defined like this:
@@ -186,12 +189,14 @@ data Tree a
 -- the root (top-most node) of the tree. The return value is Maybe a
 -- because the tree might be empty (i.e. just a Leaf)
 valAtRoot :: Tree a -> Maybe a
-valAtRoot t = undefined
+valAtRoot Leaf         = Nothing
+valAtRoot (Node x _ _) = Just x
 
 -- Ex 9: compute the size of a tree, that is, the number of Node
 -- constructors in it
 treeSize :: Tree a -> Int
-treeSize t = undefined
+treeSize Leaf         = 0
+treeSize (Node _ l r) = 1 + treeSize l + treeSize r
 
 -- Ex 10: get the leftmost value in the tree. The return value is
 -- Maybe a because the tree might be empty.
@@ -208,7 +213,9 @@ treeSize t = undefined
 -- leftest (Node 1 (Node 2 Leaf (Node 3 Leaf Leaf)) (Node 4 Leaf Leaf))
 --   ==> Just 2
 leftest :: Tree a -> Maybe a
-leftest t = undefined
+leftest Leaf            = Nothing
+leftest (Node x Leaf _) = Just x
+leftest (Node _ l _)    = leftest l
 
 -- Ex 11: implement map for trees.
 --
@@ -218,7 +225,8 @@ leftest t = undefined
 -- mapTree (+2) (Node 0 (Node 1 Leaf Leaf) (Node 2 Leaf Leaf))
 --   ==> (Node 2 (Node 3 Leaf Leaf) (Node 4 Leaf Leaf))
 mapTree :: (a -> b) -> Tree a -> Tree b
-mapTree f t = undefined
+mapTree _ Leaf         = Leaf
+mapTree f (Node x l r) = Node (f x) (mapTree f l) (mapTree f r)
 
 -- Ex 12: insert the given value into the leftmost possible place. You
 -- need to return a new tree since the function is pure.
@@ -241,7 +249,8 @@ mapTree f t = undefined
 --               (Node 3 Leaf Leaf))
 --             (Node 4 Leaf Leaf)
 insertL :: a -> Tree a -> Tree a
-insertL x t = undefined
+insertL x Leaf         = Node x Leaf Leaf
+insertL x (Node y l r) = Node y (insertL x l) r
 
 -- Ex 13: implement the function measure, that takes a tree and
 -- returns a tree with the same shape, but with the value at every
@@ -266,7 +275,14 @@ insertL x t = undefined
 --                         (Node 2 Leaf
 --                                 (Node 1 Leaf Leaf)))
 measure :: Tree a -> Tree Int
-measure t = undefined
+measure Leaf = Leaf
+measure (Node _ l r) = Node v l' r'
+  where
+    val Leaf         = 0
+    val (Node v _ _) = v
+    l' = measure l
+    r' = measure r
+    v = 1 + val l' + val r'
 
 -- Ex 14: the standard library function
 --   foldr :: (a -> b -> b) -> b -> [a] -> b
@@ -281,16 +297,16 @@ measure t = undefined
 -- DON'T change the definitions of mysum and mylength, only implement
 -- sumf and lengtf appropriately.
 mysum :: [Int] -> Int
-mysum is = foldr sumf 0 is
+mysum = foldr sumf 0
 
 sumf :: Int -> Int -> Int
-sumf x y = undefined
+sumf = (+)
 
 mylength :: [a] -> Int
-mylength xs = foldr lengthf 0 xs
+mylength = foldr lengthf 0
 
 lengthf :: a -> Int -> Int
-lengthf x y = undefined
+lengthf _ = succ
 
 -- Ex 15: implement the function foldTree that works like foldr, but
 -- for Trees.
@@ -312,17 +328,18 @@ sumt x y z = x + y + z
 
 -- Sum of numbers in the tree
 treeSum :: Tree Int -> Int
-treeSum t = foldTree sumt 0 t
+treeSum = foldTree sumt 0
 
 leaft :: a -> Int -> Int -> Int
 leaft x y z = y + z
 
 -- Number of leaves in the tree
 treeLeaves :: Tree a -> Int
-treeLeaves t = foldTree leaft 1 t
+treeLeaves = foldTree leaft 1
 
 foldTree :: (a -> b -> b -> b) -> b -> Tree a -> b
-foldTree f x t = undefined
+foldTree f x Leaf         = x
+foldTree f x (Node a l r) = f a (foldTree f x l) (foldTree f x r)
 
 -- Ex 16: You'll find a Color datatype below. It has the three basic
 -- colours Red, Green and Blue, and two color transformations, Mix and
@@ -360,4 +377,13 @@ data Color
     deriving (Show)
 
 rgb :: Color -> [Double]
-rgb col = undefined
+rgb col =
+    bounded $
+    case col of
+        Red        -> [1, 0, 0]
+        Green      -> [0, 1, 0]
+        Blue       -> [0, 0, 1]
+        Mix c1 c2  -> zipWith (+) (rgb c1) (rgb c2)
+        Darken p c -> map (* (1 - p)) (rgb c)
+  where
+    bounded = map (max 0 . min 1)
