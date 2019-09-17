@@ -218,7 +218,7 @@ genGraph' is todo es = do
 genGraph :: [Int] -> Gen [(Int,Int)]
 genGraph is = do
   base <- genGraph' is (tail is) []
-  [a,b,c] <- vectorOf 3 (elements is)
+  ~[a,b,c] <- vectorOf 3 (elements is)
   return $ (a,b):(b,c):base
 
 mkGraph es = map neighs [0..n]
