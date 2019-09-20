@@ -28,10 +28,10 @@ import Data.List
 -- True *! 3 ==> [True,True,True]
 
 (%$) :: String -> String -> String
-x %$ y = undefined
+x %$ y = x ++ y ++ x
 
 (*!) :: Int -> a -> [a]
-n *! val = undefined
+n *! val = replicate n val
 
 -- Ex 2: implement the function allEqual which returns True if all
 -- values in the list are equal.
@@ -46,7 +46,8 @@ n *! val = undefined
 -- you remove the Eq a => constraint from the type!
 
 allEqual :: Eq a => [a] -> Bool
-allEqual xs = undefined
+allEqual [] = True
+allEqual (x:xs) = all (x ==) xs
 
 -- Ex 3: implement the function secondSmallest that returns the second
 -- smallest value in the list, or Nothing if there is no such value.
@@ -58,7 +59,9 @@ allEqual xs = undefined
 -- secondSmallest [5,3,7,2,3,1]  ==>  Just 2
 
 secondSmallest :: Ord a => [a] -> Maybe a
-secondSmallest xs = undefined
+secondSmallest [] = Nothing
+secondSmallest [x] = Nothing
+secondSmallest xs = Just $ sort xs !! 1
 
 -- Ex 4: find how two lists differ from each other. If they have
 -- different lengths, return
