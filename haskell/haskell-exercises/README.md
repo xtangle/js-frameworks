@@ -1,3 +1,5 @@
+Originally from https://github.com/opqdonut/haskell-exercises
+
 Opqdonut's Haskell Exercises
 ============================
 

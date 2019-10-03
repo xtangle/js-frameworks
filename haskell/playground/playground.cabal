@@ -14,7 +14,7 @@ extra-source-files:
     ChangeLog.md
 
 library
-  build-depends: base >=4.7 && <5, directory
+  build-depends: base >=4.7 && <5, directory, random
 
 source-repository head
   type: git
