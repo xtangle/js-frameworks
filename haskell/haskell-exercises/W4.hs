@@ -1,9 +1,9 @@
 module W4 where
 
-import Control.Monad
-import Data.List
-import Data.IORef
-import System.IO
+import           Control.Monad
+import           Data.IORef
+import           Data.List
+import           System.IO
 
 -- Week 4:
 --   * The IO type
@@ -18,59 +18,55 @@ import System.IO
 --   * lines
 --
 -- If these exercises feel weird or hard, feel free to skip this week for now
-
 -- Ex 1: define an IO operation hello that prints two lines. The
 -- first line should be HELLO and the second one WORLD
-
 hello :: IO ()
-hello = undefined
+hello = do
+    putStrLn "HELLO"
+    putStrLn "WORLD"
 
 -- Ex 2: define the IO operation greet that takes a name as an
 -- argument and prints a line "HELLO name".
-
 greet :: String -> IO ()
-greet name = undefined
-
+greet name = putStrLn $ "HELLO " ++ name
 
 -- Ex 3: define the IO operation greet2 that reads a name from the
 -- keyboard and then greets that name like the in the previous
 -- exercise.
 --
 -- Try to use the greet operation in your solution.
-
 greet2 :: IO ()
-greet2 = undefined
+greet2 = do
+    name <- getLine
+    greet name
 
 -- Ex 4: define the IO operation readWords n which reads n lines from
 -- the user and returns them in alphabetical order.
-
 readWords :: Int -> IO [String]
-readWords n = undefined
+readWords n = do
+    words <- replicateM n getLine
+    return $ sort words
 
 -- Ex 5: define the IO operation readUntil f, which reads lines from
 -- the user and returns them as a list. Reading is stopped when f
 -- returns True for a line. (The value for which f returns True is not
 -- returned.)
-
 readUntil :: (String -> Bool) -> IO [String]
 readUntil f = undefined
 
 -- Ex 6: given n, print the n first fibonacci numbers, one per line
-
 printFibs :: Int -> IO ()
 printFibs n = undefined
 
 -- Ex 7: isums n should read n numbers from the user and return their
 -- sum. Additionally, after each read number, the sum up to that
 -- number should be printed.
-
 isums :: Int -> IO Int
 isums n = undefined
 
 -- Ex 8: when is a useful function, but its first argument has type
 -- Bool. Write a function that behaves similarly but the first
 -- argument has type IO Bool.
-
 whenM :: IO Bool -> IO () -> IO ()
 whenM cond op = undefined
 
@@ -87,7 +83,6 @@ whenM cond op = undefined
 -- in while ask (putStrLn "YAY!")
 --
 -- This prints YAY! as long as the user keeps answering Y
-
 while :: IO Bool -> IO () -> IO ()
 while cond op = undefined
 
@@ -106,7 +101,6 @@ while cond op = undefined
 --     2. reads a line from the user
 --     3. prints "BOOM"
 --     4. returns the line read from the user
-
 debug :: String -> IO a -> IO a
 debug s op = undefined
 
@@ -116,13 +110,11 @@ debug s op = undefined
 -- In case you don't know what mapM_ does, it takes a parameterized IO
 -- operation and a list of parameters, and runs the operation for each
 -- value in the list.
-
 mymapM_ :: (a -> IO b) -> [a] -> IO ()
 mymapM_ = undefined
 
 -- Ex 12: Reimplement the function forM using pattern matching and
 -- recursion.
-
 myforM :: [a] -> (a -> IO b) -> IO [b]
 myforM as f = undefined
 
@@ -147,7 +139,6 @@ myforM as f = undefined
 --
 --     do l <- readLn
 --        replicateM l getLine
-
 doubleCall :: IO (IO a) -> IO a
 doubleCall op = undefined
 
@@ -165,7 +156,6 @@ doubleCall op = undefined
 --   1. take the value of type c and pass it to op2
 --   2. take the resulting value (of type a) and pass it to op1
 --   3. return the result (of type b)
-
 compose :: (a -> IO b) -> (c -> IO a) -> c -> IO b
 compose op1 op2 c = undefined
 
@@ -190,7 +180,6 @@ compose op1 op2 c = undefined
 --  *W4> inc
 --  *W4> get
 --  4
-
 mkCounter :: IO (IO (), IO Int)
 mkCounter = undefined
 
@@ -199,7 +188,6 @@ mkCounter = undefined
 -- numbers are given in ascending order.
 --
 -- Have a look at the docs for the System.IO module for help.
-
 hFetchLines :: Handle -> [Int] -> IO [String]
 hFetchLines h nums = undefined
 
@@ -215,7 +203,6 @@ hFetchLines h nums = undefined
 -- quoting. You can assume each , character starts a new field.
 --
 -- NB! The lines might have different numbers of elements.
-
 readCSV :: FilePath -> IO [[String]]
 readCSV path = undefined
 
@@ -257,7 +244,6 @@ readCSV path = undefined
 -- Hint! It's probably wise to implement a pure function for finding
 -- the differing lines. A suitable type could be
 -- [String] -> [String] -> [String].
-
 compareFiles :: FilePath -> FilePath -> IO ()
 compareFiles a b = undefined
 
@@ -285,6 +271,5 @@ compareFiles a b = undefined
 --     f ("quit",n)  = (False,"bye bye",n)
 -- in interact' f 0
 --
-
-interact' :: ((String,st) -> (Bool,String,st)) -> st -> IO st
+interact' :: ((String, st) -> (Bool, String, st)) -> st -> IO st
 interact' f state = undefined
