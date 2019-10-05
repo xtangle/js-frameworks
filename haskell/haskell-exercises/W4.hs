@@ -52,23 +52,43 @@ readWords n = do
 -- returns True for a line. (The value for which f returns True is not
 -- returned.)
 readUntil :: (String -> Bool) -> IO [String]
-readUntil f = undefined
+readUntil f = do
+    line <- getLine
+    if f line
+        then return []
+        else do
+            rest <- readUntil f
+            return (line : rest)
 
 -- Ex 6: given n, print the n first fibonacci numbers, one per line
 printFibs :: Int -> IO ()
-printFibs n = undefined
+printFibs n = forM_ (take n $ map memoized_fib [0 ..]) print
+  where
+    fib 0 = 1
+    fib 1 = 1
+    fib n = memoized_fib (n - 2) + memoized_fib (n - 1)
+    memoized_fib = (map fib [0 ..] !!)
 
 -- Ex 7: isums n should read n numbers from the user and return their
 -- sum. Additionally, after each read number, the sum up to that
 -- number should be printed.
 isums :: Int -> IO Int
-isums n = undefined
+isums = printSums 0
+  where
+    printSums sum 0 = return sum
+    printSums sum n = do
+        num <- readLn
+        let sum' = num + sum
+        print sum'
+        printSums sum' (n - 1)
 
 -- Ex 8: when is a useful function, but its first argument has type
 -- Bool. Write a function that behaves similarly but the first
 -- argument has type IO Bool.
 whenM :: IO Bool -> IO () -> IO ()
-whenM cond op = undefined
+whenM cond op = do
+    cond' <- cond
+    when cond' op
 
 -- Ex 9: implement the while loop. while condition operation should
 -- run operation as long as condition returns True.
@@ -84,7 +104,11 @@ whenM cond op = undefined
 --
 -- This prints YAY! as long as the user keeps answering Y
 while :: IO Bool -> IO () -> IO ()
-while cond op = undefined
+while cond op = do
+    cond' <- cond
+    when cond' $ do
+        op
+        while cond op
 
 -- Ex 10: given a string and an IO operation, print the string, run
 -- the IO operation, print the string again, and finally return what
@@ -102,7 +126,11 @@ while cond op = undefined
 --     3. prints "BOOM"
 --     4. returns the line read from the user
 debug :: String -> IO a -> IO a
-debug s op = undefined
+debug s op = do
+    putStrLn s
+    a <- op
+    putStrLn s
+    return a
 
 -- Ex 11: Reimplement mapM_ (specialized to the IO type) using
 -- recursion and pattern matching.
@@ -111,12 +139,19 @@ debug s op = undefined
 -- operation and a list of parameters, and runs the operation for each
 -- value in the list.
 mymapM_ :: (a -> IO b) -> [a] -> IO ()
-mymapM_ = undefined
+mymapM_ f [] = return ()
+mymapM_ f (a:as) = do
+    _ <- f a
+    mymapM_ f as
 
 -- Ex 12: Reimplement the function forM using pattern matching and
 -- recursion.
 myforM :: [a] -> (a -> IO b) -> IO [b]
-myforM as f = undefined
+myforM [] f = return []
+myforM (a:as) f = do
+    b <- f a
+    bs <- myforM as f
+    return $ b : bs
 
 -- Ex 13: sometimes one bumps into IO operations that return IO
 -- operations. For instance the type IO (IO Int) means an IO operation
@@ -140,7 +175,9 @@ myforM as f = undefined
 --     do l <- readLn
 --        replicateM l getLine
 doubleCall :: IO (IO a) -> IO a
-doubleCall op = undefined
+doubleCall op = do
+    op2 <- op
+    op2
 
 -- Ex 14: implement the analogue of function composition (the (.)
 -- operator) for IO operations. That is, take an operation op1 of type
@@ -157,7 +194,9 @@ doubleCall op = undefined
 --   2. take the resulting value (of type a) and pass it to op1
 --   3. return the result (of type b)
 compose :: (a -> IO b) -> (c -> IO a) -> c -> IO b
-compose op1 op2 c = undefined
+compose op1 op2 c = do
+    a <- op2 c
+    op1 a
 
 -- Ex 15: take a look at the documentaiton for Data.IORef
 -- <http://www.haskell.org/ghc/docs/latest/html/libraries/base/Data-IORef.html>
@@ -181,7 +220,11 @@ compose op1 op2 c = undefined
 --  *W4> get
 --  4
 mkCounter :: IO (IO (), IO Int)
-mkCounter = undefined
+mkCounter = do
+    ref <- newIORef 0
+    let inc = modifyIORef' ref (+ 1)
+        get = readIORef ref
+    return (inc, get)
 
 -- Ex 16: fetch from the given file (Handle) the lines with the given
 -- indices. Line indexing starts from 1. You can assume that the
@@ -189,7 +232,9 @@ mkCounter = undefined
 --
 -- Have a look at the docs for the System.IO module for help.
 hFetchLines :: Handle -> [Int] -> IO [String]
-hFetchLines h nums = undefined
+hFetchLines h nums = do
+    contents <- hGetContents h
+    return $ map ((lines contents !!) . subtract 1) nums
 
 -- Ex 17: CSV is a file format that stores a two-dimensional array of
 -- values in a file. Each row of the file is a row of the array. Each
@@ -204,7 +249,13 @@ hFetchLines h nums = undefined
 --
 -- NB! The lines might have different numbers of elements.
 readCSV :: FilePath -> IO [[String]]
-readCSV path = undefined
+readCSV path = do
+    contents <- readFile path
+    let mySplitOn c ls =
+            case break (== c) ls of
+                (a, [])  -> [a]
+                (a, c:b) -> a : mySplitOn c b
+    return $ map (mySplitOn ',') (lines contents)
 
 -- Ex 18: your task is to compare two files, a and b. The files should
 -- have the same contents, but if lines at index i differ from each
@@ -245,7 +296,22 @@ readCSV path = undefined
 -- the differing lines. A suitable type could be
 -- [String] -> [String] -> [String].
 compareFiles :: FilePath -> FilePath -> IO ()
-compareFiles a b = undefined
+compareFiles a b = do
+    contentA <- readFile a
+    contentB <- readFile b
+    let linesA = lines contentA
+        linesB = lines contentB
+        ds = diffs linesA linesB
+        printDiff (a, b) = do
+            putStrLn $ "< " ++ a
+            putStrLn $ "> " ++ b
+    forM_ ds printDiff
+
+diffs :: [String] -> [String] -> [(String, String)]
+diffs [] [] = []
+diffs (a:as) (b:bs)
+    | a == b = diffs as bs
+    | otherwise = (a, b) : diffs as bs
 
 -- Ex 19: In this exercise we see how a program can be split into a
 -- pure part that does all of the work, and a simple IO wrapper that
@@ -272,4 +338,10 @@ compareFiles a b = undefined
 -- in interact' f 0
 --
 interact' :: ((String, st) -> (Bool, String, st)) -> st -> IO st
-interact' f state = undefined
+interact' f state = do
+    line <- getLine
+    let (b, s, st) = f (line, state)
+    putStr s
+    if b
+        then interact' f st
+        else return st
