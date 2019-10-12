@@ -46,7 +46,7 @@ gcdReverse a b
         return result
 
 -- try:
--- mapM_ putStrLn . fromDiffList . snd . runWriter $ gcdReverse 110 34
+-- mapM_ putStrLn . fromDiffList . snd . runWriter $ gcdReverse' 110 34
 -- more efficient version using DiffLists
 gcdReverse' :: Int -> Int -> Writer (DiffList String) Int
 gcdReverse' a b
