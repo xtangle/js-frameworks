@@ -17,6 +17,9 @@ extra-source-files:
 library
   build-depends: base >=4.7 && <5, directory, random, bytestring, mtl
   exposed-modules:
+    Modules.Geometry.Cube
+    Modules.Geometry.Cuboid
+    Modules.Geometry.Sphere
     Modules.DiffList
 
 source-repository head
