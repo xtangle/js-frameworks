@@ -21,6 +21,7 @@ library
     Modules.Geometry.Cuboid
     Modules.Geometry.Sphere
     Modules.DiffList
+    Modules.Stack
 
 source-repository head
   type: git
