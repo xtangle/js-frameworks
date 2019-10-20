@@ -4,6 +4,8 @@ import           Control.Applicative
 import           Control.Monad
 import           Control.Monad.Trans.State
 import           Data.Char
+import           Data.Maybe                (fromMaybe)
+import           Debug.Trace               (trace)
 
 -- Week 6: Monads
 --
@@ -212,7 +214,7 @@ binom n k = do
 --  runState update 3
 --    ==> ((),7)
 update :: State Int ()
-update = undefined
+update = state $ \x -> ((), 2 * x + 1)
 
 -- Ex 6: using the State monad, walk through a list and increment the
 -- state by one each time a given element is encountered. Additionally
@@ -225,7 +227,16 @@ update = undefined
 --  runState (lengthAndCount True [False,True,False,True,False]) 0
 --    ==> (5,2)
 lengthAndCount :: Eq a => a -> [a] -> State Int Int
-lengthAndCount x ys = undefined
+lengthAndCount x (y:ys) = do
+    s <- get
+    put $
+        s +
+        (if x == y
+             then 1
+             else 0)
+    l <- lengthAndCount x ys
+    return (l + 1)
+lengthAndCount _ [] = return 0
 
 -- Ex 7: using a state of type [(a,Int)] we can keep track of the
 -- numbers of occurrences of elements of type a. For instance
@@ -244,7 +255,10 @@ lengthAndCount x ys = undefined
 --
 -- PS. Order of the list of pairs doesn't matter
 count :: Eq a => a -> State [(a, Int)] ()
-count x = return ()
+count x = do
+    l <- get
+    let c = fromMaybe 0 (lookup x l)
+    put $ (x, c + 1) : filter ((/= x) . fst) l
 
 -- Ex 8: given a list of values, replace each value by a number saying
 -- which occurrence of the value this was in the list.
@@ -260,7 +274,13 @@ count x = return ()
 --  runState (occurrences [5,5,6,6,5,6,7]) []
 --    ==> ([1,2,1,2,3,3,1],[(5,3),(6,3),(7,1)])
 occurrences :: (Eq a) => [a] -> State [(a, Int)] [Int]
-occurrences xs = undefined
+occurrences (x:xs) = do
+    count x
+    occs <- get
+    let Just cnt = lookup x occs
+    rest <- occurrences xs
+    return $ cnt : rest
+occurrences [] = return []
 
 -- Ex 9: implement the function ifM, that takes three monadic
 -- operations. If the first of the operations returns True, the second
@@ -278,7 +298,11 @@ test = do
     return (x < 10)
 
 ifM :: Monad m => m Bool -> m a -> m a -> m a
-ifM opBool opThen opElse = undefined
+ifM opBool opThen opElse = do
+    b <- opBool
+    if b
+        then opThen
+        else opElse
 
 -- Ex 10: the standard library function Control.Monad.mapM defines a
 -- monadic map operation. Some examples of using it (safeDiv is define
@@ -302,7 +326,12 @@ safeDiv x 0.0 = Nothing
 safeDiv x y   = Just (x / y)
 
 mapM2 :: Monad m => (a -> b -> m c) -> [a] -> [b] -> m [c]
-mapM2 op xs ys = undefined
+mapM2 op (x:xs) (y:ys) = do
+    z <- op x y
+    rest <- mapM2 op xs ys
+    return $ z : rest
+mapM2 _ [] _ = return []
+mapM2 _ _ [] = return []
 
 -- Ex 11: Funnykiztan has cities that are named with by 0..n-1. Some
 -- cities are connected by roads. Your task is to find out if you can
@@ -366,7 +395,12 @@ routeExists :: [[Int]] -> Int -> Int -> Bool
 routeExists cities i j = j `elem` execState (dfs cities i) []
 
 dfs :: [[Int]] -> Int -> State [Int] ()
-dfs cities i = undefined
+dfs cities i = do
+    visited <- get
+    when (i `notElem` visited) $ do
+        modify (i :)
+        let neighbors = trace ("in dfs, visited: " ++ show visited) cities !! i
+        forM_ neighbors (dfs cities)
 
 -- Ex 12: define the function orderedPairs that returns all pairs
 -- (i,j) such that i<j and i occurs in the given list before j.
