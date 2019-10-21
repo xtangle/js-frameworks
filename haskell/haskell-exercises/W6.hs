@@ -399,7 +399,7 @@ dfs cities i = do
     visited <- get
     when (i `notElem` visited) $ do
         modify (i :)
-        let neighbors = trace ("in dfs, visited: " ++ show visited) cities !! i
+        let neighbors = cities !! i
         forM_ neighbors (dfs cities)
 
 -- Ex 12: define the function orderedPairs that returns all pairs
@@ -413,7 +413,15 @@ dfs cities i = do
 --
 -- PS. once again the tests don't care about the order of results
 orderedPairs :: [Int] -> [(Int, Int)]
-orderedPairs xs = undefined
+orderedPairs xs = do
+    i <- inds
+    j <- inds
+    let a = xs !! i
+        b = xs !! j
+    guard $ i < j && a < b
+    return (a, b)
+  where
+    inds = [0 .. length xs - 1]
 
 -- Ex 13: compute all possible sums of elements from the given
 -- list. Use the list monad.
@@ -431,7 +439,7 @@ orderedPairs xs = undefined
 --   sums [1,2,4]
 --     ==> [7,3,5,1,6,2,4,0]
 sums :: [Int] -> [Int]
-sums xs = undefined
+sums xs = map sum $ filterM (const [True, False]) xs
 
 -- Ex 14: the standard library defines the function
 --
