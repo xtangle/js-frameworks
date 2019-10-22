@@ -463,7 +463,11 @@ sumBounded :: Int -> [Int] -> Maybe Int
 sumBounded k xs = foldM (f1 k) 0 xs
 
 f1 :: Int -> Int -> Int -> Maybe Int
-f1 k acc x = undefined
+f1 k acc x
+    | acc' <= k = Just acc'
+    | otherwise = Nothing
+  where
+    acc' = acc + x
 
 -- sumNotTwice computes the sum of a list, but ignores duplicated
 -- elements.
@@ -477,7 +481,13 @@ sumNotTwice :: [Int] -> Int
 sumNotTwice xs = fst $ runState (foldM f2 0 xs) []
 
 f2 :: Int -> Int -> State [Int] Int
-f2 acc x = undefined
+f2 acc x = do
+    seen <- get
+    if x `notElem` seen
+        then do
+            modify (x :)
+            return $ acc + x
+        else return acc
 
 -- Ex 15: here is the Result type from last week. Implement a Monad
 -- Result instance that behaves roughly like the Monad Maybe instance.
@@ -518,8 +528,13 @@ instance Applicative Result where
     pure = return
     (<*>) = ap
 
-instance Monad Result
-  -- implement return and >>=
+-- implement return and >>=
+instance Monad Result where
+    return = MkResult
+    (>>=) (MkResult a) f = f a
+    (>>=) NoResult _     = NoResult
+    (>>=) (Failure s) _  = Failure s
+    fail = Failure
 
 -- Ex 16: Here is the type SL that combines the State and Logger
 -- types. Implement an instance Monad SL, that behaves like the
@@ -563,13 +578,24 @@ putSL s' = SL (\s -> ((), s', []))
 modifySL :: (Int -> Int) -> SL ()
 modifySL f = SL (\s -> ((), f s, []))
 
-instance Functor SL
-  -- implement fmap
+-- implement fmap
+instance Functor SL where
+    fmap f (SL h) =
+        SL $ \s ->
+            let (a, s1, l) = h s
+             in (f a, s1, l)
 
 -- again, disregard this
 instance Applicative SL where
     pure = return
     (<*>) = ap
 
-instance Monad SL
-  -- implement return and >>=
+-- implement return and >>=
+instance Monad SL where
+    return x = SL (\s -> (x, s, []))
+    (>>=) (SL h) f =
+        SL $ \s ->
+            let (a, s1, l1) = h s
+                (SL g) = f a
+                (b, s2, l2) = g s1
+             in (b, s2, l1 ++ l2)
