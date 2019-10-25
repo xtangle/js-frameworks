@@ -1,11 +1,8 @@
 module W6 where
 
-import           Control.Applicative
-import           Control.Monad
-import           Control.Monad.Trans.State
-import           Data.Char
-import           Data.Maybe                (fromMaybe)
-import           Debug.Trace               (trace)
+import Control.Monad
+import Control.Monad.Trans.State
+import Data.Char
 
 -- Week 6: Monads
 --
@@ -28,6 +25,8 @@ import           Debug.Trace               (trace)
 -- Functors too. The State monad is introduced a bit later:
 --
 -- http://learnyouahaskell.com/for-a-few-monads-more#state
+
+
 -- Ex 1: let's use the Maybe type to talk about computations that can
 -- fail. A value of type "a -> Maybe b" takes an argument of type a
 -- and can either succesfully return a value of type b, or fail and
@@ -37,9 +36,10 @@ import           Debug.Trace               (trace)
 -- computations like this. We get the result of the previous
 -- computation (Maybe a) and the next computation (a -> Maybe b) and
 -- return the new result (Maybe b):
+
 (?>) :: Maybe a -> (a -> Maybe b) -> Maybe b
-Nothing ?> _ = Nothing -- In case of failure, propagate failure
-Just x ?> f = f x -- In case of sucess, run the next computation
+Nothing ?> _ = Nothing   -- In case of failure, propagate failure
+Just x  ?> f = f x       -- In case of sucess, run the next computation
 
 -- Your task is to help implement the function readName that given a
 -- string like "Forename Surname" produces the pair ("Forname",
@@ -53,38 +53,35 @@ Just x ?> f = f x -- In case of sucess, run the next computation
 -- The function readNames has already been implemented using ?>. You
 -- need to define the functions split, checkNumber and checkCapitals
 -- so that readNames works correctly.
+
 -- DO NOT touch this definition!
-readNames :: String -> Maybe (String, String)
-readNames s = split s ?> checkNumber ?> checkCapitals
+readNames :: String -> Maybe (String,String)
+readNames s =
+  split s
+  ?>
+  checkNumber
+  ?>
+  checkCapitals
 
 -- split should split a string into two words. If the input doesn't
 -- contain a space, Nothing should be returned
 --
 -- (NB! There are obviously other corner cases like the inputs " " and
 -- "a b c", but you don't need to worry about those here)
-split :: String -> Maybe (String, String)
-split s =
-    case break (== ' ') s of
-        (a, ' ':b) -> Just (a, b)
-        _          -> Nothing
+split :: String -> Maybe (String,String)
+split s = undefined
 
 -- checkNumber should take a pair of two strings and return then
 -- unchanged if they don't contain numbers. Otherwise Nothing is
 -- returned.
 checkNumber :: (String, String) -> Maybe (String, String)
-checkNumber (for, sur) =
-    if any isDigit (for ++ sur)
-        then Nothing
-        else Just (for, sur)
+checkNumber (for,sur) = undefined
 
 -- checkCapitals should take a pair of two strings and return them
 -- unchanged if both start with a capital letter. Otherwise Nothing is
 -- returned.
 checkCapitals :: (String, String) -> Maybe (String, String)
-checkCapitals (for, sur) =
-    if all isUpper (map head [for, sur])
-        then Just (for, sur)
-        else Nothing
+checkCapitals (for,sur) = undefined
 
 -- Ex 2: implement a function myTake that works just like take, but
 --   1. the arguments are of types Maybe Int and Maybe [a]
@@ -104,12 +101,9 @@ checkCapitals (for, sur) =
 --    ==> Nothing
 --  myTake (Just 4) (Just [5,6,7])
 --    ==> Nothing
+
 myTake :: Maybe Int -> Maybe [a] -> Maybe [a]
-myTake mi ml = do
-    i <- mi
-    l <- ml
-    guard (i <= length l)
-    Just (take i l)
+myTake mi ml = undefined
 
 -- Ex 3: given a list of indices and a list of values, return the sum
 -- of the values in the given indices. You should fail if any of the
@@ -126,13 +120,9 @@ myTake mi ml = do
 --    Just 19
 --  selectSum [0..10] [4,6,9,20]
 --    Nothing
+
 selectSum :: Num a => [a] -> [Int] -> Maybe a
-selectSum xs is = sum <$> mapM (safeIndex xs) is
-  where
-    safeIndex ys i =
-        if (i >= 0) && (i < length ys)
-            then Just (ys !! i)
-            else Nothing
+selectSum xs is = undefined
 
 -- Ex 4: below you'll find the implementation of a Logger monad and
 -- some examples of its use.
@@ -152,25 +142,25 @@ selectSum xs is = sum <$> mapM (safeIndex xs) is
 --   binom 0 7 ==> Logger ["B(0,7)"] 0
 --   binom 1 1 ==> Logger ["B(0,0)","B(0,1)","B(1,1)"] 1
 --   binom 2 2 ==> Logger ["B(0,0)","B(0,1)","B(1,1)","B(0,1)","B(0,2)","B(1,2)","B(2,2)"] 1
-data Logger a =
-    Logger [String] a
-    deriving (Show)
+
+data Logger a = Logger [String] a
+  deriving Show
 
 instance Functor Logger where
-    fmap f (Logger l a) = Logger l (f a)
+  fmap f (Logger l a) = Logger l (f a)
 
 instance Monad Logger where
-    return = Logger []
-    Logger la a >>= f = Logger (la ++ lb) b
-      where
-        Logger lb b = f a
+  return x = Logger [] x
+  Logger la a >>= f = Logger (la++lb) b
+    where Logger lb b = f a
 
 -- disregard this. in recent versions of the Haskell standard library,
 -- all Monads must also be Applicative. These exercises don't really
 -- cover Applicative.
 instance Applicative Logger where
-    pure = return
-    (<*>) = ap
+  pure = return
+  (<*>) = ap
+
 
 msg :: String -> Logger ()
 msg s = Logger [s] ()
@@ -178,33 +168,28 @@ msg s = Logger [s] ()
 -- An example
 multiplyLog :: Int -> Int -> Logger Int
 multiplyLog a b = do
-    msg ("first arg is " ++ show a)
-    msg ("second arg is " ++ show b)
-    let ret = a * b
-    msg ("returning product " ++ show ret)
-    return ret
+  msg ("first arg is " ++ show a)
+  msg ("second arg is " ++ show b)
+  let ret = a * b
+  msg ("returning product " ++ show ret)
+  return ret
 
 productLog :: [Int] -> Logger Int
 productLog [] = do
-    msg "recursion base case"
-    return 1
+  msg "recursion base case"
+  return 1
+
 productLog (x:xs) = do
-    msg ("head " ++ show x)
-    msg ("recurse on " ++ show xs)
-    productXs <- productLog xs
-    multiplyLog x productXs
+  msg ("head "++show x)
+  msg ("recurse on "++show xs)
+  productXs <- productLog xs
+  multiplyLog x productXs
 
 -- Try running e.g. productLog [1,2,3] in GHCi!
+
 -- Implement this:
 binom :: Integer -> Integer -> Logger Integer
-binom n k = do
-    let go :: Integer -> Integer -> Logger Integer
-        go _ 0   = return 1
-        go 0 _   = return 0
-        go n' k' = (+) <$> binom (n' - 1) (k' - 1) <*> binom (n' - 1) k'
-    result <- go n k
-    msg $ "B" ++ show (n, k)
-    return result
+binom n k = undefined
 
 -- Ex 5: using the State monad, write the operation update that first
 -- multiplies the state by 2 and then adds one to it. The state has
@@ -213,8 +198,9 @@ binom n k = do
 -- Example:
 --  runState update 3
 --    ==> ((),7)
+
 update :: State Int ()
-update = state $ \x -> ((), 2 * x + 1)
+update = undefined
 
 -- Ex 6: using the State monad, walk through a list and increment the
 -- state by one each time a given element is encountered. Additionally
@@ -226,17 +212,9 @@ update = state $ \x -> ((), 2 * x + 1)
 -- Example:
 --  runState (lengthAndCount True [False,True,False,True,False]) 0
 --    ==> (5,2)
+
 lengthAndCount :: Eq a => a -> [a] -> State Int Int
-lengthAndCount x (y:ys) = do
-    s <- get
-    put $
-        s +
-        (if x == y
-             then 1
-             else 0)
-    l <- lengthAndCount x ys
-    return (l + 1)
-lengthAndCount _ [] = return 0
+lengthAndCount x ys = undefined
 
 -- Ex 7: using a state of type [(a,Int)] we can keep track of the
 -- numbers of occurrences of elements of type a. For instance
@@ -254,11 +232,9 @@ lengthAndCount _ [] = return 0
 --    ==> ((),[('a',2),('b',3)])
 --
 -- PS. Order of the list of pairs doesn't matter
-count :: Eq a => a -> State [(a, Int)] ()
-count x = do
-    l <- get
-    let c = fromMaybe 0 (lookup x l)
-    put $ (x, c + 1) : filter ((/= x) . fst) l
+
+count :: Eq a => a -> State [(a,Int)] ()
+count x = return ()
 
 -- Ex 8: given a list of values, replace each value by a number saying
 -- which occurrence of the value this was in the list.
@@ -273,14 +249,9 @@ count x = do
 --    ==> ([1,2,3,1,2],[(True,3),(False,2)])
 --  runState (occurrences [5,5,6,6,5,6,7]) []
 --    ==> ([1,2,1,2,3,3,1],[(5,3),(6,3),(7,1)])
-occurrences :: (Eq a) => [a] -> State [(a, Int)] [Int]
-occurrences (x:xs) = do
-    count x
-    occs <- get
-    let Just cnt = lookup x occs
-    rest <- occurrences xs
-    return $ cnt : rest
-occurrences [] = return []
+
+occurrences :: (Eq a) => [a] -> State [(a,Int)] [Int]
+occurrences xs = undefined
 
 -- Ex 9: implement the function ifM, that takes three monadic
 -- operations. If the first of the operations returns True, the second
@@ -292,17 +263,14 @@ occurrences [] = return []
 --    ==> ('b',11)
 --  runState (put 9 >> ifM test (return 'a') (return 'b')) 0
 --    ==> ('a',9)
+
 test :: State Int Bool
 test = do
-    x <- get
-    return (x < 10)
+  x <- get
+  return (x<10)
 
 ifM :: Monad m => m Bool -> m a -> m a -> m a
-ifM opBool opThen opElse = do
-    b <- opBool
-    if b
-        then opThen
-        else opElse
+ifM opBool opThen opElse = undefined
 
 -- Ex 10: the standard library function Control.Monad.mapM defines a
 -- monadic map operation. Some examples of using it (safeDiv is define
@@ -321,17 +289,13 @@ ifM opBool opThen opElse = do
 --    ==> Just [7,9]
 --  runState (mapM2 (\x y -> if x then modify (+y) else return () ) [True,False,True] [1,2,4]) 0
 --    ==> ([(),(),()],5)
+
 safeDiv :: Double -> Double -> Maybe Double
 safeDiv x 0.0 = Nothing
-safeDiv x y   = Just (x / y)
+safeDiv x y = Just (x/y)
 
 mapM2 :: Monad m => (a -> b -> m c) -> [a] -> [b] -> m [c]
-mapM2 op (x:xs) (y:ys) = do
-    z <- op x y
-    rest <- mapM2 op xs ys
-    return $ z : rest
-mapM2 _ [] _ = return []
-mapM2 _ _ [] = return []
+mapM2 op xs ys = undefined
 
 -- Ex 11: Funnykiztan has cities that are named with by 0..n-1. Some
 -- cities are connected by roads. Your task is to find out if you can
@@ -378,9 +342,12 @@ mapM2 _ _ [] = return []
 -- of simple situations. After this they test the function routeExists
 -- more extensively. The tests look at the state produced by dfs but
 -- do not care in which order it is.
+
 -- Three cities, each connected to the two others
 example1 :: [[Int]]
-example1 = [[1, 2], [0, 2], [0, 1]]
+example1 = [[1,2]
+           ,[0,2]
+           ,[0,1]]
 
 -- A more two-part network:
 --
@@ -389,18 +356,18 @@ example1 = [[1, 2], [0, 2], [0, 1]]
 -- |    |
 -- 2 -- 3
 example2 :: [[Int]]
-example2 = [[1, 2], [0, 3], [0, 3], [1, 2], [5], [4]]
+example2 = [[1,2]
+           ,[0,3]
+           ,[0,3]
+           ,[1,2]
+           ,[5]
+           ,[4]]
 
 routeExists :: [[Int]] -> Int -> Int -> Bool
 routeExists cities i j = j `elem` execState (dfs cities i) []
 
 dfs :: [[Int]] -> Int -> State [Int] ()
-dfs cities i = do
-    visited <- get
-    when (i `notElem` visited) $ do
-        modify (i :)
-        let neighbors = cities !! i
-        forM_ neighbors (dfs cities)
+dfs cities i = undefined
 
 -- Ex 12: define the function orderedPairs that returns all pairs
 -- (i,j) such that i<j and i occurs in the given list before j.
@@ -412,16 +379,9 @@ dfs cities i = do
 --    ==> [(1,3),(1,2),(1,4),(3,4),(2,4)]
 --
 -- PS. once again the tests don't care about the order of results
-orderedPairs :: [Int] -> [(Int, Int)]
-orderedPairs xs = do
-    i <- inds
-    j <- inds
-    let a = xs !! i
-        b = xs !! j
-    guard $ i < j && a < b
-    return (a, b)
-  where
-    inds = [0 .. length xs - 1]
+
+orderedPairs :: [Int] -> [(Int,Int)]
+orderedPairs xs = undefined
 
 -- Ex 13: compute all possible sums of elements from the given
 -- list. Use the list monad.
@@ -438,8 +398,9 @@ orderedPairs xs = do
 --     ==> [1,0]
 --   sums [1,2,4]
 --     ==> [7,3,5,1,6,2,4,0]
+
 sums :: [Int] -> [Int]
-sums xs = map sum $ filterM (const [True, False]) xs
+sums xs = undefined
 
 -- Ex 14: the standard library defines the function
 --
@@ -451,6 +412,7 @@ sums xs = map sum $ filterM (const [True, False]) xs
 --
 -- Your task is to implement the functions f1 and f2 so that the
 -- functions sumBounded and sumNotTwice work.
+
 -- sumBounded computes the sum of a list. However if some prefix of
 -- the list has a sum of over k, Nothing is returned.
 --
@@ -463,11 +425,7 @@ sumBounded :: Int -> [Int] -> Maybe Int
 sumBounded k xs = foldM (f1 k) 0 xs
 
 f1 :: Int -> Int -> Int -> Maybe Int
-f1 k acc x
-    | acc' <= k = Just acc'
-    | otherwise = Nothing
-  where
-    acc' = acc + x
+f1 k acc x = undefined
 
 -- sumNotTwice computes the sum of a list, but ignores duplicated
 -- elements.
@@ -481,13 +439,7 @@ sumNotTwice :: [Int] -> Int
 sumNotTwice xs = fst $ runState (foldM f2 0 xs) []
 
 f2 :: Int -> Int -> State [Int] Int
-f2 acc x = do
-    seen <- get
-    if x `notElem` seen
-        then do
-            modify (x :)
-            return $ acc + x
-        else return acc
+f2 acc x = undefined
 
 -- Ex 15: here is the Result type from last week. Implement a Monad
 -- Result instance that behaves roughly like the Monad Maybe instance.
@@ -509,32 +461,24 @@ f2 acc x = do
 --     ==> NoResult 
 --   MkResult 1 >>= (\x -> MkResult (x+1))
 --     ==> MkResult 2
-data Result a
-    = MkResult a
-    | NoResult
-    | Failure String
-    deriving (Show, Eq)
+
+data Result a = MkResult a | NoResult | Failure String deriving (Show,Eq)
 
 -- A straightforward Functor instance
 instance Functor Result where
-    fmap f (MkResult a) = MkResult (f a)
-    fmap _ NoResult     = NoResult
-    fmap _ (Failure s)  = Failure s
+  fmap f (MkResult a) = MkResult (f a)
+  fmap _ NoResult = NoResult
+  fmap _ (Failure s) = Failure s
 
 -- disregard this. in recent versions of the Haskell standard library,
 -- all Monads must also be Applicative. These exercises don't really
 -- cover Applicative.
 instance Applicative Result where
-    pure = return
-    (<*>) = ap
+  pure = return
+  (<*>) = ap
 
--- implement return and >>=
 instance Monad Result where
-    return = MkResult
-    (>>=) (MkResult a) f = f a
-    (>>=) NoResult _     = NoResult
-    (>>=) (Failure s) _  = Failure s
-    fail = Failure
+  -- implement return and >>=
 
 -- Ex 16: Here is the type SL that combines the State and Logger
 -- types. Implement an instance Monad SL, that behaves like the
@@ -555,47 +499,36 @@ instance Monad Result where
 --      ==> (2,2,["hello"])
 --   runSL (replicateM_ 5 (modifySL (+1) >> getSL >>= \x -> msgSL ("got "++show x))) 1
 --      ==> ((),6,["got 2","got 3","got 4","got 5","got 6"])
-data SL a =
-    SL (Int -> (a, Int, [String]))
+
+data SL a = SL (Int -> (a,Int,[String]))
 
 -- Run an SL operation with the given starting state
-runSL :: SL a -> Int -> (a, Int, [String])
+runSL :: SL a -> Int -> (a,Int,[String])
 runSL (SL f) state = f state
 
 -- Write a log message
 msgSL :: String -> SL ()
-msgSL msg = SL (\s -> ((), s, [msg]))
+msgSL msg = SL (\s -> ((),s,[msg]))
 
 -- Fetch the state
 getSL :: SL Int
-getSL = SL (\s -> (s, s, []))
+getSL = SL (\s -> (s,s,[]))
 
 -- Overwrite the state
 putSL :: Int -> SL ()
-putSL s' = SL (\s -> ((), s', []))
+putSL s' = SL (\s -> ((),s',[]))
 
 -- Modify the state
-modifySL :: (Int -> Int) -> SL ()
-modifySL f = SL (\s -> ((), f s, []))
+modifySL :: (Int->Int) -> SL ()
+modifySL f = SL (\s -> ((),f s,[]))
 
--- implement fmap
 instance Functor SL where
-    fmap f (SL h) =
-        SL $ \s ->
-            let (a, s1, l) = h s
-             in (f a, s1, l)
+  -- implement fmap
 
 -- again, disregard this
 instance Applicative SL where
-    pure = return
-    (<*>) = ap
+  pure = return
+  (<*>) = ap
 
--- implement return and >>=
 instance Monad SL where
-    return x = SL (\s -> (x, s, []))
-    (>>=) (SL h) f =
-        SL $ \s ->
-            let (a, s1, l1) = h s
-                (SL g) = f a
-                (b, s2, l2) = g s1
-             in (b, s2, l1 ++ l2)
+  -- implement return and >>=

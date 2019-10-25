@@ -1,7 +1,5 @@
 module W2 where
 
-import           Data.Char
-
 -- Week 2:
 --
 --  * lists
@@ -23,29 +21,27 @@ import           Data.Char
 --
 --  Prelude> :t length
 --  length :: [a] -> Int
-import           Data.List
+
+import Data.List
+import Data.Char
 
 -- Ex 1: Define the constant years, that is a list of the values 1982,
 -- 2004 and 2012 in this order.
-years :: [Int]
-years = [1982, 2004, 2012]
+
+years = undefined
 
 -- Ex 2: define the function measure that for an empty list returns -1
 -- and for other lists returns the length of the list.
+
 measure :: [String] -> Int
-measure [] = -1
-measure ss = length ss
+measure ss = undefined
 
 -- Ex 3: define the function takeFinal, which returns the n last
 -- elements of the given list.
-takeFinal :: Int -> [Int] -> [Int]
--- takeFinal n xs = takeFinal' (length xs - n) xs
--- better way:
-takeFinal n xs = drop (length xs - n) xs
 
---takeFinal' _ [] = []
---takeFinal' 0 xs = xs
---takeFinal' n (_:xs) = takeFinal' (n - 1) xs
+takeFinal :: Int -> [Int] -> [Int]
+takeFinal n xs = undefined
+
 -- Ex 4: remove the nth element of the given list. More precisely,
 -- return a list that is identical to the given list except the nth
 -- element is missing.
@@ -57,15 +53,17 @@ takeFinal n xs = drop (length xs - n) xs
 -- remove 2 [4,5,6,7]  ==>  [4,5,7]
 --
 -- The [a] in the type signature means "a list of any type"
+
 remove :: Int -> [a] -> [a]
-remove i xs = take i xs ++ drop (i + 1) xs
+remove i xs = undefined
 
 -- Ex 5: substring i n s should return the length n substring of s
 -- starting at index i.
 --
 -- Remember that strings are lists!
+
 substring :: Int -> Int -> String -> String
-substring i n s = take n (drop i s)
+substring i n s = undefined
 
 -- Ex 6: implement the function mymax that takes as argument a
 -- measuring function (of type a -> Int) and two values (of type a).
@@ -79,21 +77,18 @@ substring i n s = take n (drop i s)
 --  mymax (*2)   3       5      ==>  5
 --  mymax length [1,2,3] [4,5]  ==>  [1,2,3]
 --  mymax head   [1,2,3] [4,5]  ==>  [4,5]
+
 mymax :: (a -> Int) -> a -> a -> a
-mymax measure a b =
-    if measure a > measure b
-        then a
-        else b
+mymax measure a b = undefined
 
 -- Ex 7: countSorted receives a list of strings and returns a count of
 -- how many of the strings are in alphabetical order (i.e. how many of
 -- the strings have their letters in alphabetical order)
 --
 -- Remember the functions length, filter and sort
+
 countSorted :: [String] -> Int
-countSorted ss = length $ filter sorted ss
-  where
-    sorted s = s == sort s
+countSorted ss = undefined
 
 -- Ex 8: Implement a function funny, that
 --  - takes in a list of strings
@@ -106,8 +101,9 @@ countSorted ss = length $ filter sorted ss
 -- These functions will help:
 --  - toUpper :: Char -> Char   from the module Data.Char
 --  - intercalate               from the module Data.List
---funny :: [String] -> String
-funny = map toUpper . unwords . filter ((> 5) . length)
+
+funny :: [String] -> String
+funny strings = undefined
 
 -- Ex 9: implement quicksort. Quicksort is a recursive sorting
 -- algorithm that works like this.
@@ -121,11 +117,9 @@ funny = map toUpper . unwords . filter ((> 5) . length)
 --      are combined into one sorted list
 --
 -- PS. yes if you want to nit-pick this isn't really quicksort :)
+
 quicksort :: [Int] -> [Int]
-quicksort [] = []
-quicksort (x:xs) = quicksort (fst parts) ++ [x] ++ quicksort (snd parts)
-  where
-    parts = partition (< x) xs
+quicksort xs = undefined
 
 -- Ex 10: powers k max should return all the powers of k that are less
 -- than or equal to max. For example:
@@ -137,8 +131,9 @@ quicksort (x:xs) = quicksort (fst parts) ++ [x] ++ quicksort (snd parts)
 -- Hints:
 --   * n^max > max
 --   * the function takeWhile
+
 powers :: Int -> Int -> [Int]
-powers n max = takeWhile (<= max) $ map (\i -> n ^ i) [0 ..]
+powers n max = undefined
 
 -- Ex 11: implement a search function that takes an updating function,
 -- a checking function and an initial value. Search should repeatedly
@@ -157,29 +152,22 @@ powers n max = takeWhile (<= max) $ map (\i -> n ^ i) [0 ..]
 --       check _ = False
 --   in search tail check "xyzAvvt"
 --     ==> Avvt
-search :: (a -> a) -> (a -> Bool) -> a -> a
-search update check initial
-    | check initial = initial
-    | otherwise = search update check $ update initial
+
+search :: (a->a) -> (a->Bool) -> a -> a
+search update check initial = undefined
 
 -- Ex 12: given numbers n and k, build the list of numbers n,n+1..k.
 -- Use recursion and the : operator to build the list.
+
 fromTo :: Int -> Int -> [Int]
-fromTo n k
-    | n > k = []
-    | otherwise = n : fromTo (n + 1) k
+fromTo n k = undefined
 
 -- Ex 13: given i, build the list of sums [1, 1+2, 1+2+3, .., 1+2+..+i]
 --
 -- Ps. you'll probably need a recursive helper function
-sums :: Int -> [Int]
-sums i = sums' i 0 1
 
-sums' n t i
-    | i > n = []
-    | otherwise = u : sums' n u (i + 1)
-  where
-    u = t + i
+sums :: Int -> [Int]
+sums i = undefined
 
 -- Ex 14: using list pattern matching and recursion, define a function
 -- mylast that returns the last value of the given list. For an empty
@@ -188,26 +176,25 @@ sums' n t i
 -- Examples:
 --   mylast 0 [] ==> 0
 --   mylast 0 [1,2,3] ==> 3
+
 mylast :: a -> [a] -> a
-mylast def []     = def
-mylast _ [x]      = x
-mylast def (_:xs) = mylast def xs
+mylast def xs = undefined
 
 -- Ex 15: define a function that checks if the given list is in
 -- increasing order. Use recursion and pattern matching. Don't use any
 -- library list functions.
+
 sorted :: [Int] -> Bool
-sorted []       = True
-sorted [x]      = True
-sorted (x:y:xs) = (x <= y) && sorted (y : xs)
+sorted xs = undefined
 
 -- Ex 16: compute the partial sums of the given list like this:
 --
 --   sumsOf [a,b,c]  ==>  [a,a+b,a+b+c]
 --   sumsOf [a,b]    ==>  [a,a+b]
 --   sumsOf []       ==>  []
+
 sumsOf :: [Int] -> [Int]
-sumsOf xs = map (sum . (`take` xs)) [1 .. (length xs)]
+sumsOf xs = undefined
 
 -- Ex 17: define the function mymaximum that takes a list and a
 -- comparing function of type a -> a -> Ordering and returns the
@@ -224,17 +211,9 @@ sumsOf xs = map (sum . (`take` xs)) [1 .. (length xs)]
 --       comp x y = compare x y
 --   in mymaximum comp 1 [1,4,6,100,0,3]
 --     ==> 0
-mymaximum :: (a -> a -> Ordering) -> a -> [a] -> a
-mymaximum _ def []       = def
-mymaximum cmp def (x:xs) = mymaximum' cmp x xs
 
-mymaximum' _ currMax [] = currMax
-mymaximum' cmp currMax (x:xs) = mymaximum' cmp newMax xs
-  where
-    newMax =
-        if cmp currMax x == LT
-            then x
-            else currMax
+mymaximum :: (a -> a -> Ordering) -> a -> [a] -> a
+mymaximum cmp def xs = undefined
 
 -- Ex 18: define a version of map that takes a two-argument function
 -- and two lists. Example:
@@ -244,10 +223,9 @@ mymaximum' cmp currMax (x:xs) = mymaximum' cmp newMax xs
 --
 -- Ps. this function is in the Haskell Prelude but under a different
 -- name.
+
 map2 :: (a -> b -> c) -> [a] -> [b] -> [c]
-map2 _ [] _          = []
-map2 _ _ []          = []
-map2 f (a:as) (b:bs) = f a b : map2 f as bs
+map2 f as bs = undefined
 
 -- Ex 19: in this exercise you get to implement an interpreter for a
 -- simple language. The language controls two counters, A and B, and
@@ -278,39 +256,16 @@ map2 f (a:as) (b:bs) = f a b : map2 f as bs
 --
 -- Unfortunately the surprise might not work if you've implemented
 -- your interpreter correctly but weirdly :(
-interpreter :: [String] -> [String]
-interpreter = interpreter' 0 0
-  where
-    interpreter' _ _ [] = []
-    interpreter' a b (command:commands) =
-        case command of
-            "incA"   -> interpreter' (a + 1) b commands
-            "incB"   -> interpreter' a (b + 1) commands
-            "decA"   -> interpreter' (a - 1) b commands
-            "decB"   -> interpreter' a (b - 1) commands
-            "printA" -> show a : interpreter' a b commands
-            "printB" -> show b : interpreter' a b commands
-            _        -> "BAD!" : interpreter' a b commands
 
---interpreter = go 0 0
---  where
---    go a b ("incA":commands)   = go (a + 1) b commands
---    go a b ("decA":commands)   = go (a - 1) b commands
---    go a b ("incB":commands)   = go a (b + 1) commands
---    go a b ("decB":commands)   = go a (b - 1) commands
---    go a b ("printA":commands) = show a : go a b commands
---    go a b ("printB":commands) = show b : go a b commands
---    go a b []                  = []
---    go a b (_:commands)        = "BAD" : go a b commands
---
---
+interpreter :: [String] -> [String]
+interpreter commands = undefined
+
 -- Ex 20: write a function that finds the n first squares (numbers of
 -- the form x*x) that start and end with the same digit.
 --
 -- Example: squares 9 ==> [1,4,9,121,484,676,1521,1681,4624]
 --
 -- Remember, the function show transforms a number to a string.
+
 squares :: Int -> [Integer]
-squares n = (take n . filter sameFirstLastDigit . map (^ 2)) [1 ..]
-  where
-    sameFirstLastDigit x = head (show x) == last (show x)
+squares n = undefined

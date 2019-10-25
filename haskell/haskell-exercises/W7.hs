@@ -1,10 +1,10 @@
 module W7 where
 
-import           Control.Monad.State
-import           Data.List
-import           Debug.Trace         (trace)
+import Data.List
+import Control.Monad.State
 
 -- Week 7: recap
+
 -- Ex 1: implement the function pyramid that draws a pyramid like this:
 --
 --      *
@@ -22,10 +22,9 @@ import           Debug.Trace         (trace)
 --   pyramidi 3 ==> "  *\n ***\n*****\n"
 --
 -- PS. you can test the the function like this in ghci: putStr (pyramidi 5)
+
 pyramid :: Int -> String
-pyramid n =
-    let toLine i = replicate (n - i) ' ' ++ replicate (2 * i - 1) '*'
-     in unlines $ map toLine [1 .. n]
+pyramid n = undefined
 
 -- Ex 2: collect every second element from the given list.
 --
@@ -38,10 +37,9 @@ pyramid n =
 --    ==> [0,8,4]
 --  everySecond []
 --    ==> []
+
 everySecond :: [a] -> [a]
-everySecond []         = []
-everySecond [x]        = [x]
-everySecond (x1:x2:xs) = x1 : everySecond xs
+everySecond xs = undefined
 
 -- Ex 3: given a list, return a pair of functions (get,wrap) such that
 --   * get i -- returns element i of the list
@@ -50,8 +48,9 @@ everySecond (x1:x2:xs) = x1 : everySecond xs
 -- Example:
 --  let (get,query) = wrap [5,6,7] in (get 0, query 6, get 2, query 2)
 --    ==> (5,True,7,False)
+
 wrap :: Eq a => [a] -> (Int -> a, a -> Bool)
-wrap xs = ((xs !!), (`elem` xs))
+wrap xs = undefined
 
 -- Tehtävä 4: Toteuta funktio nousevat, joka pilkkoo lukulistan
 -- (aidosti) nouseviin pätkiin.
@@ -59,6 +58,7 @@ wrap xs = ((xs !!), (`elem` xs))
 -- Saat käyttää kaikkia standardikirjaston listafunktioita.
 --
 -- Esimerkkejä:
+
 -- Ex 4: split the given list into (monotonically) increasing pieces.
 --
 -- Feel free to use any list functions.
@@ -68,12 +68,9 @@ wrap xs = ((xs !!), (`elem` xs))
 --  increasings [1,1] ==> [[1],[1]]
 --  increasings [4,7,9,3,6,1,2,2,5,8,0]
 --    ==> [[4,7,9],[3,6],[1,2],[2,5,8],[0]]
+
 increasings :: [Int] -> [[Int]]
-increasings [] = []
-increasings (x:xs) =
-    let zs = zip (x : xs) xs
-        (inc, rest) = span (uncurry (<)) zs
-     in (x : map snd inc) : increasings (map snd rest)
+increasings xs = undefined
 
 -- Ex 5: define a datatype Student that holds three pieces of
 -- information about a student: a name (a String), a student number (a
@@ -98,26 +95,23 @@ increasings (x:xs) =
 --    ==> 200
 --  getPoints $ addPoints (-1000) $ newStudent "x" "0"
 --    ==> 0
-data Student =
-    Student String String Int
-    deriving (Show)
+
+data Student = StudentUndefined
 
 newStudent :: String -> String -> Student
-newStudent name num = Student name num 0
+newStudent nam num = undefined
 
 getName :: Student -> String
-getName (Student name _ _) = name
+getName s = undefined
 
 getNumber :: Student -> String
-getNumber (Student _ num _) = num
+getNumber s = undefined
 
 getPoints :: Student -> Int
-getPoints (Student _ _ points) = points
+getPoints s = undefined
 
 addPoints :: Int -> Student -> Student
-addPoints x student@(Student name num points)
-    | x >= 0 = Student name num (points + x)
-    | otherwise = student
+addPoints x s = undefined
 
 -- Ex 6: define a type Tree23 that represents a tree where each
 -- (internal) node has 2 or 3 children.
@@ -133,30 +127,22 @@ addPoints x student@(Student name num points)
 --
 -- PS. Leave the "deriving Show" line intact because the tests want to
 -- print out trees
-data Tree23
-    = Leaf
-    | Node2 Tree23 Tree23
-    | Node3 Tree23 Tree23 Tree23
-    deriving (Show)
+
+data Tree23 = Undefined
+  deriving Show
 
 leaf :: Tree23
-leaf = Leaf
-
+leaf = undefined
 node2 :: Tree23 -> Tree23 -> Tree23
-node2 = Node2
-
+node2 = undefined
 node3 :: Tree23 -> Tree23 -> Tree23 -> Tree23
-node3 = Node3
+node3 = undefined
 
 treeHeight :: Tree23 -> Int
-treeHeight Leaf             = 0
-treeHeight (Node2 t1 t2)    = 1 + maximum (map treeHeight [t1, t2])
-treeHeight (Node3 t1 t2 t3) = 1 + maximum (map treeHeight [t1, t2, t3])
+treeHeight t = undefined
 
 treeSize :: Tree23 -> Int
-treeSize Leaf             = 0
-treeSize (Node2 t1 t2)    = 1 + sum (map treeSize [t1, t2])
-treeSize (Node3 t1 t2 t3) = 1 + sum (map treeSize [t1, t2, t3])
+treeSize t = undefined
 
 -- Ex 7: define a type MyString that represents a string and Eq and
 -- Ord instances for it.
@@ -178,26 +164,19 @@ treeSize (Node3 t1 t2 t3) = 1 + sum (map treeSize [t1, t2, t3])
 --
 -- compare (fromString "abc") (fromString "ab")  ==> GT
 -- compare (fromString "abc") (fromString "abd") ==> LT
-newtype MyString =
-    MyString String
-    deriving (Show)
+
+data MyString = MyStringUndefined
 
 fromString :: String -> MyString
-fromString = MyString
-
+fromString s = undefined
 toString :: MyString -> String
-toString (MyString s) = s
+toString ms = undefined
 
 instance Eq MyString where
-    (==) (MyString s1) (MyString s2) = s1 == s2
+  (==) = error "implement me"
 
 instance Ord MyString where
-    compare (MyString s1) (MyString s2)
-        | l1 /= l2 = compare l1 l2
-        | otherwise = compare s1 s2
-      where
-        l1 = length s1
-        l2 = length s2
+  compare = error "implement me"
 
 -- Ex 8: below you'll find a type Expr that represents arithmetic
 -- expressions. For instance (1+2)/3+4 would be represented as
@@ -219,24 +198,12 @@ instance Ord MyString where
 --     ==> Nothing
 --   safeEval (Plus (Constant 1) (Div (Constant 8) (Plus (Constant 2) (Constant (-2)))))
 --     ==> Nothing
-data Expr
-    = Constant Int
-    | Plus Expr Expr
-    | Div Expr Expr
-    deriving (Show)
+
+data Expr = Constant Int | Plus Expr Expr | Div Expr Expr
+  deriving Show
 
 safeEval :: Expr -> Maybe Int
-safeEval (Constant c) = Just c
-safeEval (Plus e1 e2) = do
-    v1 <- safeEval e1
-    v2 <- safeEval e2
-    return $ v1 + v2
-safeEval (Div e1 e2) = do
-    v1 <- safeEval e1
-    v2 <- safeEval e2
-    if v2 == 0
-        then Nothing
-        else return $ div v1 v2
+safeEval e = undefined
 
 -- Ex 9: implement the function test that gets a list of monadic
 -- predicates (of type Monad m => a -> m Bool) and a value (of type
@@ -265,24 +232,19 @@ safeEval (Div e1 e2) = do
 --   ==> (False,[8,4])
 --  runState (test [test2 4, test2 8, test2 10] 0) []
 --   ==> (False,[4])
+
 test1 :: Int -> Int -> Maybe Bool
-test1 k x = Just (x > k)
+test1 k x = Just (x>k)
 
 failTest :: Int -> Maybe Bool
 failTest x = Nothing
 
 test2 :: Int -> Int -> State [Int] Bool
-test2 k x = do
-    modify (k :)
-    return (x > k)
+test2 k x = do modify (k:)
+               return (x>k)
 
 test :: Monad m => [a -> m Bool] -> a -> m Bool
-test [] _ = return True
-test (t:ts) x = do
-    b <- t x
-    if b
-        then test ts x
-        else return False
+test ts x = undefined
 
 -- Ex 10: using the State monad, create a state with the elements that
 -- occur in the given list an _odd_ number of times.
@@ -294,10 +256,6 @@ test (t:ts) x = do
 --    ==> ((),[1,3])
 --  runState (odds [1,2,3,1,2,3,1,2,3]) []
 --    ==> ((),[3,2,1])
+
 odds :: Eq a => [a] -> State [a] ()
-odds [] = return ()
-odds (x:xs) = modify (flip x) >> odds xs
-  where
-    flip x xs
-        | x `elem` xs = delete x xs
-        | otherwise = x : xs
+odds xs = undefined
